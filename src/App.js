@@ -29,7 +29,8 @@ function App() {
   const [players, updatePlayers] = useReducer(playerReducer, 0);
 
   useEffect(() => {
-    const socket = new Socket(process.env.WS_URL, { room_id: id });
+    console.log(process.env)
+    const socket = new Socket(process.env.REACT_APP_WS_URL, { room_id: id });
     socket.connect();
     setSocket(socket);
     console.log(socket);
