@@ -47,12 +47,13 @@ function App() {
   function handleJoin(event) {
     console.log("handleJoin")
 
-    if (id == null || name == null) {
+    if (name === "") {
       return;
     }
 
     event.preventDefault();
-    const channel = socket.channel("room:" + id);
+
+    const channel = socket.channel("room:" + (id === "" ? "new" : id));
 
     channel.on("joined", msg => {
       updateMessages(msg.name + " joined.")
