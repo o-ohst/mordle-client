@@ -30,8 +30,9 @@ function App() {
   const [messages, updateMessages] = useReducer(append, []);
   const [players, updatePlayers] = useReducer(playerReducer, 0);
   const [roomCreated, setRoomCreated] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { //http request
     console.log("useEffect, []")
     axios
       .get(process.env.REACT_APP_API_URL + "/register")
@@ -61,7 +62,7 @@ function App() {
     console.log("handleCreate")
     if (name === "" || name === undefined) return;
     event.preventDefault();
-    axios
+    axios //http
       .get(process.env.REACT_APP_API_URL + "/create-room", { params: { playerId: playerId } })
       .then(res => {
         console.log(res.data)
@@ -75,6 +76,11 @@ function App() {
     handleJoin(null);
   }, [roomCreated])
 
+  useEffect(() => { //send ready after ready
+    if (!isReady) return;
+    channel.push("ready")
+  }, [isReady, channel])
+
   function handleJoin(event) {
     console.log("handleJoin: " + roomId)
 
@@ -84,13 +90,14 @@ function App() {
 
     if (event !== null) event.preventDefault();
 
-    const channel = socket.channel("room:" + roomId);
+    const channel = socket.channel("room:" + roomId, {"playerName": name});
 
     channel.on("joined", msg => {
-      updateMessages(msg.name + " joined.")
+      updateMessages(msg.playerName + " joined.")
       updatePlayers("+");
     });
-    channel.on("newGuess", msg => updateMessages(msg.name + " made a guess: " + msg.guess));
+    channel.on("new_guess", msg => updateMessages(msg.playerName + " made a guess: " + msg.guess));
+    channel.on("ready", msg => updateMessages(msg.playerName + " is ready."));
     channel.on("presence_diff", msg => {
       // Object.entries(msg.joins).forEach(([id, data]) => {
       //   updateMessages(id + " joined again.");
@@ -104,7 +111,7 @@ function App() {
       .receive('ok', () => {
         console.log('joined successfully')
         setChannel(channel);
-        channel.push("joined", { "name": name })
+        channel.push("joined")
       })
       .receive('error', () => {
         console.log("error")
@@ -121,7 +128,11 @@ function App() {
 
   function handleGuess(event) {
     event.preventDefault();
-    channel.push("newGuess", { "name": name, "guess": guess });
+    channel.push("new_guess", { "guess": guess })
+      .receive('ok', (reply) => {
+        console.log("guess result " + reply.result)
+        updateMessages("guess evaluated: " + reply.result)
+      });
     event.target.reset();
   }
 
@@ -159,11 +170,13 @@ function App() {
             <textarea readOnly value={messages.join("\n")} style={{ "overflowY": "scroll", "width": "500px", "height": "300px", "resize": "none", "fontSize": "18px" }}>
             </textarea>
             <br /><br />
-            <form onSubmit={handleGuess}>
+            {isReady || (<button onClick={() => setIsReady(true)} style={{ "fontSize": "20px" }}>Ready</button>)}
+            {isReady && (
+              <form onSubmit={handleGuess}>
               <label htmlFor="guess" style={{ "fontSize": "20px" }}>Make a guess:</label><br />
               <input type="text" id="fname" name="fname" onChange={handleGuessChange} style={{ "fontSize": "20px" }} /><br /><br /><br />
               <input type="submit" value="Submit" style={{ "fontSize": "20px" }} />
-            </form>
+              </form>)}
           </div>
           )
         }
