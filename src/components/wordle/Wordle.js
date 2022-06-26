@@ -21,18 +21,38 @@ function Wordle(props) {
   
   const [message, setMessage] = useState("");
 
-  const [receivedColors, setReceivedColors] = useState("22222");
+  const [receivedColors, setReceivedColors] = useState("00000");
+
+  const [keyboardDisabler, setKeyboardDisabler] = useState(true);
 
   //Multiplayer States
   const { channel } = useContext(ChannelContext);
 
   const allowed_words = require("./allowed_words.json").allowed_words;
   //const { currentGuess, handleKeyUp, guessArray, isCorrect, turn, usedLetters, message } = WordleOps(props.solution);
+
+  channel.on("end_round", (msg) => {
+    setTimeout(() => {
+      setGuessArray([...Array(6)]);
+      setHistory([]);
+      setTurn(0);
+      setCurrGuess("");
+      setCorrect(false);
+      setUsedLetters({});
+      setMessage("");
+      setReceivedColors("00000");
+      setKeyboardDisabler(true);
+    }, 2000);
+  })
+
+  channel.on("start_round", (msg) => {
+    setKeyboardDisabler(false);
+  })
+
   function guessFormat() {
-    let receivedColors = "";
     channel.push("new_guess", { "guess": currentGuess})
       .receive('ok', (reply) => {
-        receivedColors = reply.result })
+        setReceivedColors(reply.result);})
     const splitReceivedColors = [...receivedColors];
     return [...currentGuess].map((letter, index) => {
         let color = "grey";
@@ -102,15 +122,18 @@ function Wordle(props) {
 
   //if user presses enter check if guess is a real word
   function handleKeyUp({ key }) {
+    if (keyboardDisabler) {
+      return;
+    }
     if (isCorrect) {
       return
     }
+    if (turn > 5) {
+      setMessage("You ran out of guesses!");
+      return;
+    }
     if (key === "Enter") {
       // add guess if enough turns, not in history, length = 5, valid word
-      if (turn > 5) {
-        setMessage("You ran out of guesses!");
-        return;
-      }
       if (currentGuess.length !== 5) {
         setMessage("Too short!");
         return;
