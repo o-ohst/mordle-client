@@ -63,7 +63,7 @@ function RoomPage(props) {
 
   function start_game() {
     setGameStart(true);
-    navigate("/multiplayer/speedround/room");
+    navigate("/multiplayer/speedround/game");
   }
 
   channel.on("start_game", (msg) => {
