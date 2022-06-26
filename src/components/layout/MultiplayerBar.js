@@ -86,12 +86,12 @@ function MultiplayerBar() {
     });
     //make it in a horizontal bar
     return (
-        <div className="multiplayerbar">
-            { (roundEnd ? ( gameEnd ? <MessageDisplay message={message} /> : <MessageDisplay message={message} /> ) : 
         <div>
+            { (roundEnd ? ( gameEnd ? <MessageDisplay message={message} /> : <MessageDisplay message={message} /> ) : 
+        <div className="multiplayerbar">
         <div>{round === 0 ? "" : "Round: " + round}</div>
         <div className="h4">{channel.topic}</div>
-        <div>
+        <div className="multiplayerbar">
             {/* <MultplayerScoreItem playerName={playerName} score={score}/> */}
             {playerScores.map((p, i) => {
                 return <MultplayerScoreItem key={i} playerName={p[1]} score={p[2]} />

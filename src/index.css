@@ -358,5 +358,6 @@ label {
   display: inline-flex;
   align-items: center;
   max-width: 15rem;
-  max-height: 15rem;
+  max-height: 5rem;
+  column-gap: 1rem;
 }
