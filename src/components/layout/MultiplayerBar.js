@@ -9,11 +9,13 @@ function MultiplayerBar() {
     //this is use to modularly build on top of the regular wordle functions.
     const [round, setRound] = useState(0);
     const [score, setScore] = useState(6);
-    const [playerScores, setPlayerScores] = useState(players)
+    const [playerScores, setPlayerScores] = useState(players);
     const [roundEnd, setRoundEnd] = useState(false);
     const [gameEnd, setGameEnd] = useState(false);
     const [message, setMessage] = useState("");
     const [reset, setReset] = useState(false);
+    const [finalScores, setFinalScores] = useState(players.map((p) => { return [p[0], p[1], 0]}));
+    const [noCorrectPlayers, setCorrectPlayers] = useState(0);
 
     function setScores() {
         setPlayerScores(playerScores.map((p) => {
@@ -36,6 +38,17 @@ function MultiplayerBar() {
     });
 
     function setFinish(currPlayerId, result) {
+        if (result === "correct") {
+            setFinalScores(finalScores.map((p) => {
+                if (p[0] === currPlayerId) {
+                    return [p[0], p[1], finalScores.length - noCorrectPlayers];
+                }
+                return p;
+            }));
+            setCorrectPlayers(prev => {
+                return prev + 1;
+            });
+        }
         const new_playerScores = players.map((p) => {
             if (p[0] === currPlayerId) {
                 if (result === "correct") {
@@ -58,15 +71,21 @@ function MultiplayerBar() {
         setMessage("The word was: " + word + ", next round starting...");
     }
 
-    function gameOverHandler(word, winner) {
+    function gameOverHandler(word) {
         setRoundEnd(true);
         setGameEnd(true);
-        setMessage("The word was: " + word + ".The winner is: " + winner);
+        let highest = finalScores[0][1];
+        for (let i = 0; i < finalScores.length - 1; i++) {
+            if (finalScores[i + 1][2] > finalScores[i][2]) {
+                highest = finalScores[i + 1][1];
+            }
+        }
+        setMessage("The word was: " + word + ". The winner is: " + highest);
     }
 
     channel.on("end_round", (msg) => {
         if (msg.gameOver) {
-            gameOverHandler(msg.word, "No one");
+            gameOverHandler(msg.word);
             return;
         }
         endRound(msg.word);
