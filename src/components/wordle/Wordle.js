@@ -30,12 +30,16 @@ function Wordle(props) {
 
   const allowed_words = require("./allowed_words.json").allowed_words;
   //const { currentGuess, handleKeyUp, guessArray, isCorrect, turn, usedLetters, message } = WordleOps(props.solution);
-  
+
   const stateRef = useRef();
   stateRef.current = setReceivedColors;
 
   channel.on("end_round", (msg) => {
-    setMessage("Round ended! New round starting...")
+    if (msg.gameOver) {
+      setMessage("Thanks for playing!");
+    } else {
+      setMessage("Round ended! New round starting...");
+    }
     setTimeout(() => {
       setGuessArray([...Array(6)]);
       setHistory([]);

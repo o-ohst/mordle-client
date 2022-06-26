@@ -67,6 +67,7 @@ function MultiplayerBar() {
     channel.on("end_round", (msg) => {
         if (msg.gameOver) {
             gameOverHandler(msg.word, "No one");
+            return;
         }
         endRound(msg.word);
     });
@@ -75,14 +76,14 @@ function MultiplayerBar() {
         setRoundEnd(false);
         setGameEnd(false);
         setScores();
-        setRound(prev => {
-            return prev + 1;
-        });
     }
 
     channel.on("start_round", (msg) => {
         console.log("round start!")
         resetRound();
+        setRound(prev => {
+            return prev + 1;
+        });
     });
     //make it in a horizontal bar
     return (
