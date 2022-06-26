@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { ChannelContext } from "../../ChannelContext";
 import Grid from "../layout/Grid";
 import Keyboard from "../layout/Keyboard";
@@ -30,8 +30,12 @@ function Wordle(props) {
 
   const allowed_words = require("./allowed_words.json").allowed_words;
   //const { currentGuess, handleKeyUp, guessArray, isCorrect, turn, usedLetters, message } = WordleOps(props.solution);
+  
+  const stateRef = useRef();
+  stateRef.current = setReceivedColors;
 
   channel.on("end_round", (msg) => {
+    setMessage("Round ended! New round starting...")
     setTimeout(() => {
       setGuessArray([...Array(6)]);
       setHistory([]);
@@ -55,6 +59,8 @@ function Wordle(props) {
       .push("new_guess", { guess: currentGuess })
       .receive("ok", (reply) => {
         console.log("Received colors: " + reply.result);
+        stateRef.current(reply.result);
+        console.log(receivedColors);
         const splitReceivedColors = [...reply.result];
         const format_guess = [...currentGuess].map((letter, index) => {
           let color = "grey";
@@ -175,7 +181,7 @@ function Wordle(props) {
   }, [handleKeyUp]);
 
   useEffect(() => {
-    console.log(guessArray, turn, isCorrect);
+    //console.log(guessArray, turn, isCorrect);
   }, [guessArray, turn, isCorrect]);
 
   return (
