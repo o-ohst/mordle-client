@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+
+import MainMenuPage from "./pages/MainMenu";
+import MultiplayerPage from "./pages/MultiplayerLanding";
+import SingleplayerPage from "./pages/Singleplayer";
+import SpeedRoundHostPage from "./pages/MultiplayerSpeedRound";
+import WordlePage from "./pages/WordleSingleplayer";
+import RoomPage from "./pages/RoomPage";
+import { ChannelProvider } from "./ChannelContext";
+
+//Routing between pages using react-router-dom
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChannelProvider>
+      <div>
+        <Routes>
+          <Route path="/" element={<MainMenuPage />} />
+          <Route path="/singleplayer" element={<SingleplayerPage />} />
+          <Route path="/singleplayer/wordle" element={<WordlePage />} />
+          <Route path="/multiplayer" element={<MultiplayerPage />} />
+          <Route path="/multiplayer/speedround/room" element={<RoomPage />} />
+          <Route
+            path="/multiplayer/speedround/game"
+            element={<SpeedRoundHostPage />}
+          />
+        </Routes>
+      </div>
+    </ChannelProvider>
   );
 }
 
