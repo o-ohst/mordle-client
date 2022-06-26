@@ -1,5 +1,5 @@
-import { Channel } from "phoenix-socket";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { ChannelContext } from "../../ChannelContext";
 import Grid from "../layout/Grid";
 import Keyboard from "../layout/Keyboard";
 
@@ -24,12 +24,15 @@ function Wordle(props) {
   const [receivedColors, setReceivedColors] = useState("22222");
 
   //Multiplayer States
-  const [channel, setChannel] = useState();
+  const { channel } = useContext(ChannelContext);
 
   const allowed_words = require("./allowed_words.json").allowed_words;
   //const { currentGuess, handleKeyUp, guessArray, isCorrect, turn, usedLetters, message } = WordleOps(props.solution);
   function guessFormat() {
-    //channel.on{"new_guess",}
+    let receivedColors = "";
+    channel.push("new_guess", { "guess": currentGuess})
+      .receive('ok', (reply) => {
+        receivedColors = reply.result })
     const splitReceivedColors = [...receivedColors];
     return [...currentGuess].map((letter, index) => {
         let color = "grey";
