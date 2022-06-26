@@ -18,7 +18,7 @@ function Wordle(props) {
   const [isCorrect, setCorrect] = useState(false);
   //Used Keys and their colour
   const [usedLetters, setUsedLetters] = useState({});
-  
+
   const [message, setMessage] = useState("");
 
   const [receivedColors, setReceivedColors] = useState("00000");
@@ -43,37 +43,41 @@ function Wordle(props) {
       setReceivedColors("00000");
       setKeyboardDisabler(true);
     }, 2000);
-  })
+  });
 
   channel.on("start_round", (msg) => {
     setKeyboardDisabler(false);
-  })
+  });
 
   function guessFormat() {
-    channel.push("new_guess", { "guess": currentGuess})
-      .receive('ok', (reply) => {
-        setReceivedColors(reply.result);})
-    const splitReceivedColors = [...receivedColors];
-    return [...currentGuess].map((letter, index) => {
-        let color = "grey";
-        if (splitReceivedColors[index] === "2") {
-          color = "green";
-        } else if (splitReceivedColors[index] === "1") {
-          color = "yellow";
-        }
-        return { key: letter, color }
-
-    // LOCAL IMPLEMENTATION
-    // return [...currentGuess].map((letter, index) => {
-    //   let color = "grey";
-    //   if (solutionLetters[index] === letter) {
-    //     color = "green";
-    //   } else if (solutionLetters.includes(letter)) {
-    //     color = "yellow";
-    //   }
-    //   return { key: letter, color };
-    });
+    console.log(currentGuess + "sent");
+    channel
+      .push("new_guess", { guess: currentGuess })
+      .receive("ok", (reply) => {
+        console.log("Received colors: " + reply.result);
+        const splitReceivedColors = [...reply.result];
+        const format_guess = [...currentGuess].map((letter, index) => {
+          let color = "grey";
+          if (splitReceivedColors[index] === "2") {
+            color = "green";
+          } else if (splitReceivedColors[index] === "1") {
+            color = "yellow";
+          }
+          return { key: letter, color };
+        });
+        addGuess(format_guess);
+      });
   }
+  // LOCAL IMPLEMENTATION
+  // return [...currentGuess].map((letter, index) => {
+  //   let color = "grey";
+  //   if (solutionLetters[index] === letter) {
+  //     color = "green";
+  //   } else if (solutionLetters.includes(letter)) {
+  //     color = "yellow";
+  //   }
+  //   return { key: letter, color };
+
   //add one to turn, add new guess if correct update state and send to server
   function addGuess(formattedGuess) {
     setGuessArray((prevGuesses) => {
@@ -114,8 +118,8 @@ function Wordle(props) {
       return newKeys;
     });
     if (receivedColors === "22222") {
-      setCorrect(true)
-      setMessage("You've won!")
+      setCorrect(true);
+      setMessage("You've won!");
     }
     setCurrGuess("");
   }
@@ -126,7 +130,7 @@ function Wordle(props) {
       return;
     }
     if (isCorrect) {
-      return
+      return;
     }
     if (turn > 5) {
       setMessage("You ran out of guesses!");
@@ -147,8 +151,7 @@ function Wordle(props) {
         setMessage("This word does not exist!");
         return;
       }
-      const formatted = guessFormat();
-      addGuess(formatted);
+      guessFormat();
     }
     if (key === "Backspace") {
       setCurrGuess((prev) => {
@@ -166,20 +169,23 @@ function Wordle(props) {
   }
 
   useEffect(() => {
-    window.addEventListener('keyup', handleKeyUp)
+    window.addEventListener("keyup", handleKeyUp);
 
-    return () => window.removeEventListener('keyup', handleKeyUp)
-  }, [handleKeyUp])
+    return () => window.removeEventListener("keyup", handleKeyUp);
+  }, [handleKeyUp]);
 
   useEffect(() => {
-    console.log(guessArray, turn, isCorrect)
-  }, [guessArray, turn, isCorrect]
-  )
+    console.log(guessArray, turn, isCorrect);
+  }, [guessArray, turn, isCorrect]);
 
   return (
     <div>
       <Grid currentGuess={currentGuess} guesses={guessArray} turn={turn} />
-      <Keyboard usedLetters={usedLetters} message={message} handleKeyUp={handleKeyUp} />
+      <Keyboard
+        usedLetters={usedLetters}
+        message={message}
+        handleKeyUp={handleKeyUp}
+      />
     </div>
   );
 }
