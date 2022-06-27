@@ -4,8 +4,8 @@ function MultplayerScoreItem(props) {
   return (
     <div>
         <div>{props.playerName}</div>
-      <img src="/person-svgrepo-com.svg"alt="Person Logo"></img>
-      <div>{props.score}</div>
+      <h3 style={{ "marginTop": "0px", "marginBottom": "0px", "color" : "magenta" }}>{props.score}</h3>
+      <div>{props.state}</div>
     </div>
   );
 }

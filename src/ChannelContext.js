@@ -7,6 +7,7 @@ export function ChannelProvider({ children }) {
   const [players, setPlayers] = useState([]);
   const [playerId, setPlayerId] = useState();
   const [playerName, setPlayerName] = useState();
+  const [round, setRound] = useState(0);
 
   const value = {
     channel,
@@ -16,7 +17,9 @@ export function ChannelProvider({ children }) {
     playerId,
     setPlayerId,
     playerName,
-    setPlayerName
+    setPlayerName,
+    round,
+    setRound
   };
 
   return (

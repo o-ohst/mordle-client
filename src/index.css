@@ -357,6 +357,7 @@ label {
 .multiplayerbar { 
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   max-width: 15rem;
   max-height: 5rem;
   column-gap: 1rem;

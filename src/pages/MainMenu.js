@@ -10,7 +10,7 @@ function MainMenuPage() {
         </p>
         <p>
           <Link className={classes.Link} to="/singleplayer">
-            <button className={classes.button6}>Singleplayer</button>
+            <button className={classes.button6}>Singleplayer<br/>(🚧WIP)</button>
           </Link>
         </p>
         <p>

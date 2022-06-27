@@ -54,6 +54,7 @@ function Wordle(props) {
   });
 
   channel.on("start_round", (msg) => {
+    console.log("wordle start round")
     setKeyboardDisabler(false);
   });
 

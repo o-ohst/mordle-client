@@ -12,9 +12,9 @@ function MultiplayerPage() {
   const [roomCode2, setRoomCode2] = useState("");
   const [roomId, setRoomId] = useState("");
   const [name, setName] = useState("");
-  const [message, setMessage] = useState("or");
+  const [message, setMessage] = useState("OR");
   const [socket, setSocket] = useState();
-  const {channel, setChannel} = useContext(ChannelContext);
+  const {channel, setChannel, round, setRound} = useContext(ChannelContext);
   const [playerId, setPlayerId] = useState("");
   const [roomCreated, setRoomCreated] = useState(false);
   const [toRoom, setToRoom] = useState(false);
@@ -106,6 +106,11 @@ function MultiplayerPage() {
 
     const channel = socket.channel("room:" + roomId, { playerName: name });
 
+    // channel.on("start_round", (msg) => {
+    //   console.log("MPL start round")
+    //   setRound(round + 1);
+    // });
+
     channel
       .join()
       .receive("ok", () => {
@@ -138,14 +143,14 @@ function MultiplayerPage() {
       <h2>Speed Rounds</h2>
 
       <form className="menu">
-        <label>Name:</label>
         <input
           className={classes.input}
           type="text"
-          placeholder="John"
+          placeholder="Name"
           onChange={handleNameChange}
           required
         ></input>
+        <br/>
         <button
           className={classes.button6}
           onClick={(e) => {
@@ -161,7 +166,7 @@ function MultiplayerPage() {
           <input
             className={classes.inputsplit}
             type="text"
-            placeholder="hello"
+            placeholder=""
             maxLength={5}
             onChange={handleRC1}
           ></input>
@@ -169,7 +174,7 @@ function MultiplayerPage() {
           <input
             className={classes.inputsplit}
             type="text"
-            placeholder="world"
+            placeholder=""
             value={roomCode2}
             onChange={handleRC2}
           ></input>
@@ -184,7 +189,7 @@ function MultiplayerPage() {
           }}
         >
           <button className={classes.button7} onClick={joinExistingHandler}>
-            Join Existing Room
+            Join Room
           </button>
         </Link>
       </form>
