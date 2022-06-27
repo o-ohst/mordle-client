@@ -130,6 +130,7 @@ function Wordle(props) {
     });
     if (receivedColors === "22222") {
       setCorrect(true);
+      setKeyboardDisabler(true);
       setMessage("You've won!");
     }
     setCurrGuess("");
