@@ -48,7 +48,7 @@ function MultiplayerBar() {
                 return prev + 1;
             });
         }
-        const new_playerScores = players.map((p) => {
+        const new_playerScores = playerScores.map((p) => {
             if (p[0] === currPlayerId) {
                 if (result === "correct") {
                     return [p[0], p[1], result];
