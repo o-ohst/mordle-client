@@ -82,7 +82,7 @@ function MultiplayerBar() {
         const highest = finalScores.reduce((total, current) => {
             return current[2] > total[2] ? current : total
         })
-        setMessage("The word was: " + word + ". The winner is: " + highest[2]);
+        setMessage("The word was: " + word + ". The winner is: " + highest[1]);
     }
 
     channel.on("end_round", (msg) => {
