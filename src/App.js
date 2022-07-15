@@ -8,24 +8,30 @@ import MultiplayerGamePage from "./pages/MultiplayerGamePage";
 
 import { AppProvider } from "./contexts/AppContext";
 import { MultiplayerProvider } from "./contexts/MultiplayerContext";
-import { SingleWordleProvider } from "./contexts/SingleWordleContext";
+import { WordleProvider } from "./contexts/WordleContext";
 
 function App() {
   return (
     <AppProvider>
-      <div>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <SingleWordleProvider>
-            <Route path="/singleplayer" element={<SingleplayerPage />} />
-          </SingleWordleProvider>
-          <MultiplayerProvider>
-            <Route path="/multiplayer" element={<MultiplayerPage />} />
-            <Route path="/multiplayer/lobby" element={<MultiplayerLobbyPage />} />
-            <Route path="/multiplayer/game" element={<MultiplayerGamePage />} />
-          </MultiplayerProvider>
-        </Routes>
-      </div>
+      <WordleProvider>
+        <MultiplayerProvider>
+          <div>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/singleplayer" element={<SingleplayerPage />} />
+              <Route path="/multiplayer" element={<MultiplayerPage />} />
+              <Route
+                path="/multiplayer/lobby"
+                element={<MultiplayerLobbyPage />}
+              />
+              <Route
+                path="/multiplayer/game"
+                element={<MultiplayerGamePage />}
+              />
+            </Routes>
+          </div>
+        </MultiplayerProvider>
+      </WordleProvider>
     </AppProvider>
   );
 }

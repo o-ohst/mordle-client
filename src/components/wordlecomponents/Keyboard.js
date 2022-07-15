@@ -1,7 +1,7 @@
 import MessageDisplay from "./MessageDisplay";
 
 function Keyboard(props) {
-  const letters = require("./keyboard.json").letters;
+  const letters = require("../data/keyboard.json").letters;
 
   function keyboardHandler(k) {
     props.handleKeyUp({key: k})
