@@ -25,7 +25,7 @@ function App() {
                 element={<MultiplayerLobbyPage />}
               />
               <Route
-                path="/multiplayer/game"
+                path="/room/:roomId"
                 element={<MultiplayerGamePage />}
               />
             </Routes>

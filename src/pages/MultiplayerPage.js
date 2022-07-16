@@ -7,11 +7,17 @@ import { useContext, useState, useEffect } from "react";
 import { MultiplayerContext } from "../contexts/MultiplayerContext";
 
 function MultiplayerPage() {
-  const { setChannel, playerId, setPlayerId, playerName, setPlayerName, roomId, setRoomId } =
+  const {
+    playerId,
+    setPlayerId,
+    playerName,
+    setPlayerName,
+    roomId,
+    setSocket,
+    setRoomId,  } =
     useContext(MultiplayerContext);
   const [roomCode1, setRoomCode1] = useState("");
   const [roomCode2, setRoomCode2] = useState("");
-  const [socket, setSocket] = useState();
   const [roomCreated, setRoomCreated] = useState(false);
   const [roomJoin, setRoomJoin] = useState(false);
   const [joinExisting, setJoinExisting] = useState(false);
@@ -93,40 +99,20 @@ function MultiplayerPage() {
 
     if (event !== null) event.preventDefault();
 
-    const channel = socket.channel("room:" + roomId, {
-      playerName: playerName,
-    });
-
-    channel
-      .join()
-      .receive("ok", () => {
-        console.log("joined successfully");
-        setChannel(channel);
-        channel.push("joined");
-        setRoomJoin(true);
-      })
-      .receive("error", () => {
-        console.log("error");
-        setMessage("No such room exists!");
-        return;
-      });
-    return () => {
-      channel.leave();
-    };
+    navigate("/room/" + roomId);
   }
 
   useEffect(() => {
     if (!roomCreated) return;
     handleJoin(null);
-    console.log("successful creation");
   }, [roomCreated]);
 
-  useEffect(() => {
-    if (roomJoin) {
-      console.log("successful room join");
-      navigate("/multiplayer/game");
-    }
-  }, [roomJoin]);
+  // useEffect(() => {
+  //   if (roomJoin) {
+  //     console.log("successful room join");
+  //     navigate("/multiplayer/game");
+  //   }
+  // }, [roomJoin]);
 
   return (
     <div>

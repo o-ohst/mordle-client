@@ -4,6 +4,7 @@ export const MultiplayerContext = createContext();
 
 export function MultiplayerProvider({children}) {
     const [channel, setChannel] = useState(null);
+    const [socket, setSocket] = useState(null);
     const [validSession, setValidSession] = useState(true);
     const [gameStart, setGameStart] = useState(false);
     const [players, setPlayers] = useState([]);
@@ -17,6 +18,8 @@ export function MultiplayerProvider({children}) {
 
 
     const value = {
+        socket,
+        setSocket,
         channel,
         setChannel,
         validSession,

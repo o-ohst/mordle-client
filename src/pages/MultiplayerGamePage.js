@@ -10,6 +10,9 @@ import MultiplayerBar from "../components/wordlecomponents/MultiplayerBar";
 function MultiplayerGamePage() {
   const {
     channel,
+    setChannel,
+    socket,
+    playerName,
     validSession,
     gameStart,
     setGameStart,
@@ -164,26 +167,34 @@ function MultiplayerGamePage() {
   }
 
   useEffect(() => {
-    channel.on("joined", (msg) => {
+
+    if (channel !== null) return;
+
+    const ch = socket.channel("room:" + roomId, {
+      playerName: playerName,
+    });
+
+    ch.on("joined", (msg) => {
+      console.log("joined received")
         onJoin(msg.data.players.map((x) => [x.playerId, x.playerName, x.state]));
     });
 
-    channel.on("ready", (msg) => {
+    ch.on("ready", (msg) => {
       console.log("ready received");
         onReady(msg.playerId);
     });
 
-    channel.on("start_game", (msg) => {
+    ch.on("start_game", (msg) => {
         console.log("Game Start!")
       start_game();
     });
 
-    channel.on("start_round", (msg) => {
+    ch.on("start_round", (msg) => {
       console.log("Start round!");
       startRound();
     });
 
-    channel.on("end_round", (msg) => {
+    ch.on("end_round", (msg) => {
       console.log("End Round!");
       setFinalScores((prev) => {
         const new_finalscores = prev.map((x) => {
@@ -203,16 +214,33 @@ function MultiplayerGamePage() {
       }
     });
 
-    channel.on("new_guess", (msg) => {
+    ch.on("new_guess", (msg) => {
       console.log(msg.playerName + " made a guess!");
       decreasePlayer(msg.playerId, msg.row);
     });
 
-    channel.on("finish", (msg) => {
+    ch.on("finish", (msg) => {
         console.log(msg.playerId + msg.result + " finished.")
       setFinish(msg.playerId, msg.result);
     });
-  }, [channel]);
+
+    ch
+      .join()
+      .receive("ok", () => {
+        console.log("joined successfully");
+        setChannel(ch);
+        channel.push("joined");
+      })
+      .receive("error", () => {
+        console.log("error");
+        setMessage("No such room exists!");
+        return;
+      });
+    return () => {
+      channel.leave();
+    };
+
+  }, []);
 
   return (
     <div>
