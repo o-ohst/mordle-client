@@ -88,34 +88,53 @@ function MultiplayerGamePage() {
     });
   }
 
+  function endRound(word) {
+    setRoundEnd(true);
+    reset();
+    setMultiBarMessage("The word was: " + word + ", next round starting...");
+  }
+
+  function gameOverHandler(word) {
+    setRoundEnd(true);
+    setGameEnd(true);
+    const highest = finalScores.reduce((total, current) => {
+      return current[2] > total[2] ? current : total;
+    });
+    setMultiBarMessage(
+      "The word was: " + word + ". The winner is: " + highest[1]
+    );
+    setMessage("Thanks for playing!")
+  }
+
   channel.on("end_round", (msg) => {
+    setFinalScores((prev) => {
+      const new_finalscores = prev.map((x) => {
+        const id = x[0];
+        x[2] = msg.scores[id];
+        return x;
+      });
+      return new_finalscores;
+    });
     if (msg.gameOver) {
-      setMessage("Thanks for playing!");
+      gameOverHandler(msg.word);
+      return;
     } else {
       setMessage("Round ended! New round starting...");
     }
-    setFinalScores(
-        finalScores.map((x) => {
-          const id = x[0];
-          x[2] = msg.scores[id];
-          return x;
-        })
-      );
-      if (msg.gameOver) {
-        gameOverHandler(msg.word);
-        return;
-      }
-      endRound(msg.word);
-    setTimeout(() => {
-      setCurrentGuess("");
-      setGuesses([...Array(6)]);
-      setHistory([]);
-      setRow(0);
-      setRound(0);
-      setUsedLetters({});
-      setDisableGrid(true);
-    }, 2000);
+    endRound(msg.word);
   });
+
+  function reset() {
+    setTimeout(() => {
+        setCurrentGuess("");
+        setGuesses([...Array(6)]);
+        setHistory([]);
+        setRow(0);
+        setRound(0);
+        setUsedLetters({});
+        setDisableGrid(true);
+      }, 2000);
+  }
 
   function setScores() {
     setPlayers((prev) => {
@@ -137,6 +156,7 @@ function MultiplayerGamePage() {
     setRoundEnd(false);
     setGameEnd(false);
     setMessage("");
+    setMultiBarMessage("");
     setDisableGrid(false);
   });
 
@@ -175,27 +195,13 @@ function MultiplayerGamePage() {
     setFinish(msg.playerId, msg.result);
   });
 
-  function endRound(word) {
-    setRoundEnd(true);
-    setMultiBarMessage("The word was: " + word + ", next round starting...");
-  }
-
-  function gameOverHandler(word) {
-    setRoundEnd(true);
-    setGameEnd(true);
-    const highest = finalScores.reduce((total, current) => {
-      return current[2] > total[2] ? current : total;
-    });
-    setMultiBarMessage("The word was: " + word + ". The winner is: " + highest[1]);
-  }
-
   return (
     <div>
       <h2>Mordle</h2>
       {roomId ? (
         gameStart ? (
           <div>
-            <MultiplayerBar message={multiBarMessage}/>
+            <MultiplayerBar message={multiBarMessage} />
             <Wordle colorFunction={colorFunction} />
           </div>
         ) : (
