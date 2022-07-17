@@ -10,9 +10,6 @@ import MultiplayerBar from "../components/wordlecomponents/MultiplayerBar";
 function MultiplayerGamePage() {
   const {
     channel,
-    setChannel,
-    socket,
-    playerName,
     validSession,
     gameStart,
     setGameStart,
@@ -54,7 +51,7 @@ function MultiplayerGamePage() {
     setTimeout(() => {
       setCurrentGuess("");
       setGuesses([...Array(6)]);
-      setHistory([]);
+      setHistory([[],[]]);
       setRow(0);
       setRound(0);
       setUsedLetters({});
@@ -68,15 +65,11 @@ function MultiplayerGamePage() {
     return;
   }
 
-  function colorFunction(guess) {
+  function colorFunction(guess, func) {
     channel.push("new_guess", { guess: guess }).receive("ok", (reply) => {
-      console.log("Received colors: " + reply.result);
-      setReceivedColors(reply.result);
+        console.log("Received colors: " + reply.result);
+        func(reply.result);
     });
-  }
-
-  function onJoin(array) {
-    setPlayers(array);
   }
 
   function onReady(playerId) {
@@ -168,16 +161,12 @@ function MultiplayerGamePage() {
 
   useEffect(() => {
 
-    if (channel !== null) return;
+    const ch = channel;
 
-    const ch = socket.channel("room:" + roomId, {
-      playerName: playerName,
-    });
-
-    ch.on("joined", (msg) => {
-      console.log("joined received")
-        onJoin(msg.data.players.map((x) => [x.playerId, x.playerName, x.state]));
-    });
+    // ch.on("joined", (msg) => {
+    //   console.log("joined received on game page")
+    //     onJoin(msg.data.players.map((x) => [x.playerId, x.playerName, x.state]));
+    // });
 
     ch.on("ready", (msg) => {
       console.log("ready received");
@@ -223,22 +212,6 @@ function MultiplayerGamePage() {
         console.log(msg.playerId + msg.result + " finished.")
       setFinish(msg.playerId, msg.result);
     });
-
-    ch
-      .join()
-      .receive("ok", () => {
-        console.log("joined successfully");
-        setChannel(ch);
-        channel.push("joined");
-      })
-      .receive("error", () => {
-        console.log("error");
-        setMessage("No such room exists!");
-        return;
-      });
-    return () => {
-      channel.leave();
-    };
 
   }, []);
 

@@ -5,6 +5,7 @@ export const AppContext = createContext();
 export function AppProvider({children}) {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userId, setUserId] = useState();
+    const [playedToday, setPlayedToday] = useState(false);
 
     const value = {
     loggedIn,
