@@ -1,8 +1,47 @@
 @tailwind base;
+
+@layer base {
+  h1 {
+    @apply text-4xl text-white select-none;
+  }
+
+  h2 {
+    @apply text-2xl text-white select-none;
+  }
+
+  h3 {
+    @apply text-lg text-white select-none;
+  }
+
+  h4 {
+    @apply text-base text-white select-none;
+  }
+
+  p {
+    @apply text-sm text-white select-none;
+  }
+
+  a {
+    @apply text-white select-none;
+  }
+
+  html, body, div#root{
+    @apply h-full
+  }
+
+  button {
+    @apply bg-tpink text-white select-none rounded-xl p-3 w-48 text-2xl transition ease-in-out hover:-translate-y-1 active:translate-y-1 hover:ring hover:ring-white hover:ring-offset-4 hover:ring-offset-tblue focus:outline-none focus:-translate-y-1 focus:ring focus:ring-white focus:ring-offset-4 focus:ring-offset-tblue
+  }
+
+  input {
+    @apply bg-white text-tblue select-none rounded-xl p-2 w-48 text-lg focus:outline-none focus:ring focus:ring-white focus:ring-offset-4 focus:ring-offset-tblue
+  }
+}
+
 @tailwind components;
 @tailwind utilities;
 
-body {
+/* body {
   text-align: center;
   font-size: 1em;
   font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica,
@@ -505,4 +544,4 @@ label {
   box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
   color: rgba(0, 0, 0, 0.65);
   transform: translateY(0);
-}
+} */

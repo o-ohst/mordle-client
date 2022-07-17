@@ -6,6 +6,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import ReadyButton from "../components/ReadyButton";
 import { WordleContext } from "../contexts/WordleContext";
 import MultiplayerBar from "../components/wordlecomponents/MultiplayerBar";
+import Title from "../components/Title"
 
 function MultiplayerGamePage() {
   const {
@@ -38,6 +39,8 @@ function MultiplayerGamePage() {
   const [isReady, setReady] = useState(false);
   const [allReady, setAllReady] = useState(false);
   const [multiBarMessage, setMultiBarMessage] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [mouseEnter, setMouseEnter] = useState(false);
   const navigate = useNavigate();
 
   const stateRef = useRef();
@@ -243,34 +246,62 @@ function MultiplayerGamePage() {
   }, []);
 
   return (
-    <div>
-      <h2>Mordle</h2>
-      {validSession ? (
-        gameStart ? (
-          <div>
-            <MultiplayerBar message={multiBarMessage} />
-            <Wordle colorFunction={colorFunction} />
-          </div>
+    <div className="flex flex-col h-full items-center">
+      <div className="h-1/5 flex-none flex justify-center">
+        <div className="flex mt-8">
+          <img className="my-auto w-24 h-24 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-48 h-24" src="/ordle.png" alt="logo"></img>
+        </div>
+      </div>
+      <div className="h-4/5 flex-none flex justify-center">
+        {validSession ? (
+          gameStart ? (
+            <div>
+              <MultiplayerBar message={multiBarMessage} />
+              <Wordle colorFunction={colorFunction} />
+            </div>
+          ) : (
+              <div className="flex flex-col items-center h-full mt-5 gap-4">
+                <div className="h-1/5 flex flex-col items-center">
+                  <h2 className="text-white text-2xl font-sans mb-2">{copied ? "Copied!" : mouseEnter ? "Click to copy!" : "Room Code"}</h2>
+                  <div className="bg-white text-tblue rounded-2xl w-fit h-fit select-text text-center p-5  transition ease-in-out hover:-translate-y-1 active:translate-y-1"
+                    onClick={() => {
+                      navigator.clipboard.writeText(roomId)
+                      setCopied(true);
+                      setTimeout(() => {setCopied(false)}, 3000)
+                    }}
+                    onMouseEnter={() => {
+                      setMouseEnter(true);
+                    }}
+                    onMouseLeave={() => {
+                      setMouseEnter(false);
+                    }}
+                    >
+                    <h1 className="text-tblue font-mono text-3xl">{roomId}</h1>
+                  </div>
+                </div>
+                <div className="h-3/5">
+                  <PlayerReady players={players} />
+                </div>
+                <div className="h-1/5">
+                  <ReadyButton
+                    className="mt-12 bg-tpurple"
+                    isReady={isReady}
+                    allReady={allReady}
+                    readyHandler={readyHandler}
+                  />
+                </div>
+              </div>
+          )
         ) : (
           <div>
-            <h4>Waiting Room</h4>
-            <h4>Room ID: "{roomId}"</h4>
-            <PlayerReady players={players} />
-            <ReadyButton
-              isReady={isReady}
-              allReady={allReady}
-              readyHandler={readyHandler}
-            />
+            <h2>No session found</h2>
+            <button className="button6" onClick={backHome}>
+              Return to homepage
+            </button>
           </div>
-        )
-      ) : (
-        <div>
-          <h2>No session found</h2>
-          <button className="button6" onClick={backHome}>
-            Return to homepage
-          </button>
-        </div>
-      )}
+          )}
+      </div>
     </div>
     //if no roomId show return to start button
     //if game not started show ready player states
