@@ -107,6 +107,13 @@ function MultiplayerPage() {
       playerName: playerName,
     });
 
+    channel.on("joined", (msg) => {
+        console.log("joined received on multiplayer page");
+        onJoin(
+          msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
+        );
+      });
+
     channel
       .join()
       .receive("ok", () => {
@@ -133,12 +140,7 @@ function MultiplayerPage() {
 
   useEffect(() => {
     if (channel !== null) {
-      channel.on("joined", (msg) => {
-        console.log("joined received on multiplayer page");
-        onJoin(
-          msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
-        );
-      });
+
     }
   }, [channel]);
 
@@ -146,12 +148,6 @@ function MultiplayerPage() {
     if (!roomCreated) return;
     handleJoin(null);
   }, [roomCreated]);
-
-  //   useEffect(() => {
-  //     if (roomJoin) {
-  //       console.log("successful room join");
-  //     }
-  //   }, [roomJoin]);
 
   return (
     <div>

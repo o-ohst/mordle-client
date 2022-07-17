@@ -29,8 +29,7 @@ function MultiplayerGamePage() {
     setCurrentGuess,
     setDisableGrid,
     setUsedLetters,
-    setMessage,
-    setReceivedColors,
+    setMessage
   } = useContext(WordleContext);
   const [isReady, setReady] = useState(false);
   const [allReady, setAllReady] = useState(false);
@@ -162,12 +161,7 @@ function MultiplayerGamePage() {
   useEffect(() => {
 
     const ch = channel;
-
-    // ch.on("joined", (msg) => {
-    //   console.log("joined received on game page")
-    //     onJoin(msg.data.players.map((x) => [x.playerId, x.playerName, x.state]));
-    // });
-
+    
     ch.on("ready", (msg) => {
       console.log("ready received");
         onReady(msg.playerId);
