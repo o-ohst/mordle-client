@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import Wordle from "../components/wordlecomponents/Wordle";
+import Title from "../components/Title";
 import WordleModal from "../components/wordlecomponents/WordleModal";
 import { AppContext } from "../contexts/AppContext";
 import { WordleContext } from "../contexts/WordleContext";
@@ -71,8 +72,13 @@ function SingleplayerPage() {
   });
 
   return (
-    <div>
-      <h1>Mordle</h1>
+    <div className="h-full">
+      <div className="h-28 flex-none flex justify-center">
+        <div className="flex mt-4">
+          <img className="my-auto w-12 h-12 hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-24 h-12" src="/ordle.png" alt="logo"></img>
+        </div>
+      </div>
       <Wordle colorFunction={colorFunction} />
       {showModal && <WordleModal message={modalMsg} />}
     </div>

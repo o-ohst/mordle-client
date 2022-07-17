@@ -220,13 +220,13 @@ function MultiplayerGamePage() {
 
   return (
     <div className="flex flex-col h-full items-center">
-      <div className="h-1/5 flex-none flex justify-center">
+      <div className="h-28 flex-none flex justify-center">
         <div className="flex mt-8">
-          <img className="my-auto w-24 h-24 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
-          <img className="my-auto w-48 h-24" src="/ordle.png" alt="logo"></img>
+          <img className="my-auto w-16 h-16 hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-32 h-16" src="/ordle.png" alt="logo"></img>
         </div>
       </div>
-      <div className="h-4/5 flex-none flex justify-center">
+      <div className="h-5/6 pt-4 flex-none flex justify-center">
         {validSession ? (
           gameStart ? (
             <div>

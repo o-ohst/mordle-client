@@ -100,6 +100,13 @@ function MultiplayerPage() {
       playerName: playerName,
     });
 
+    channel.on("joined", (msg) => {
+      console.log("joined received on multiplayer page");
+      onJoin(
+        msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
+      );
+    });
+
     channel
       .join()
       .receive("ok", () => {
@@ -126,12 +133,7 @@ function MultiplayerPage() {
 
   useEffect(() => {
     if (channel !== null) {
-      channel.on("joined", (msg) => {
-        console.log("joined received on multiplayer page");
-        onJoin(
-          msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
-        );
-      });
+    
     }
   }, [channel]);
 
@@ -152,16 +154,16 @@ function MultiplayerPage() {
         <Title></Title>
       </div>
       <div className="h-1/4 flex flex-col justify-center">
-        <h1 className="mx-auto">Multiplayer</h1>
-          <div className="flex flex-col items-center gap-6">
+        <h1 className="mx-auto text-3xl">Multiplayer</h1>
+        <div className="flex flex-col items-center gap-6">
           <input
-            className="input p-3 mt-8 text-2xl text-center select-none"
+            className="input p-3 mt-6 text-2xl text-center select-none"
             type="text"
             placeholder="Name"
             onChange={handleNameChange}
             required
             ></input>
-          </div>
+        </div>
       </div>
       <div className="h-2/4 flex flex-col items-center mt-4">
         <button

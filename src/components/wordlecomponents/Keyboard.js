@@ -9,28 +9,27 @@ function Keyboard(props) {
   }
 
   return (
-    <div>
+    <div className="keyboard">
       <MessageDisplay message={props.message} />
-      <div className="keypad">
         {letters &&
           letters.map((row) => {
             return (
-              <div className="row">
+              <div className="keyrow">
                 {row.map((l) => {
                   if (l === "ENTER") {
                     return (
                       <div
-                        className="button"
+                        className="key"
                         onClick={() => keyboardHandler("Enter")}
                       >
                         {l}
                       </div>
                     );
                   }
-                  if (l === "DELETE") {
+                  if (l === "DEL") {
                     return (
                       <div
-                        className="button"
+                        className="key"
                         onClick={() => keyboardHandler("Backspace")}
                       >
                         {l}
@@ -41,7 +40,7 @@ function Keyboard(props) {
                     const lower = l.toLowerCase();
                     return (
                       <div
-                        className={props.usedLetters[lower]}
+                        className={"key " + props.usedLetters[lower]}
                         onClick={() => keyboardHandler(lower)}
                       >
                         {l}
@@ -50,7 +49,7 @@ function Keyboard(props) {
                   }
                   return (
                     <div
-                      className="letter"
+                      className="key"
                       onClick={() => keyboardHandler(l.toLowerCase())}
                     >
                       {l}
@@ -60,7 +59,6 @@ function Keyboard(props) {
               </div>
             );
           })}
-      </div>
     </div>
   );
 }
