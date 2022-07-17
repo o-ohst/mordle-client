@@ -101,11 +101,11 @@ function MultiplayerPage() {
     });
 
     channel.on("joined", (msg) => {
-      console.log("joined received on multiplayer page");
-      onJoin(
-        msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
-      );
-    });
+        console.log("joined received on multiplayer page");
+        onJoin(
+          msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
+        );
+      });
 
     channel
       .join()
@@ -133,7 +133,6 @@ function MultiplayerPage() {
 
   useEffect(() => {
     if (channel !== null) {
-    
     }
   }, [channel]);
 
@@ -141,12 +140,6 @@ function MultiplayerPage() {
     if (!roomCreated) return;
     handleJoin(null);
   }, [roomCreated]);
-
-  //   useEffect(() => {
-  //     if (roomJoin) {
-  //       console.log("successful room join");
-  //     }
-  //   }, [roomJoin]);
 
   return (
     <div className="flex flex-col h-full">

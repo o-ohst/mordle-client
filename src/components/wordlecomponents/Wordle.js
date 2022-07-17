@@ -18,6 +18,7 @@ function Wordle(props) {
     usedLetters,
     setUsedLetters,
     receivedColors,
+    setReceivedColors
   } = useContext(WordleContext);
   const [message, setMessage] = useState("");
   const allowed_words = require("../data/allowed_words.json").allowed_words;
@@ -73,6 +74,7 @@ function Wordle(props) {
   }
 
   function formatGuess(colors) {
+    setReceivedColors(colors);
     const splitReceivedColors = [...colors];
     const format_guess = [...currentGuess].map((letter, index) => {
       let color = "grey";
@@ -123,22 +125,6 @@ function Wordle(props) {
       }
     }
   }
-
-  // useEffect(() => {
-  //   if (receivedColors !== "") {
-  //   const splitReceivedColors = [...receivedColors];
-  //   const format_guess = [...currentGuess].map((letter, index) => {
-  //   let color = "grey";
-  //   if (splitReceivedColors[index] === "2") {
-  //     color = "green";
-  //   } else if (splitReceivedColors[index] === "1") {
-  //     color = "yellow";
-  //   }
-  //   return { key: letter, color };
-  //   });
-  //   addGuess(format_guess);
-  // }
-  // }, [receivedColors]);
 
   useEffect(() => {
     window.addEventListener("keyup", handleKeyUp);
