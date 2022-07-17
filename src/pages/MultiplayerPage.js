@@ -9,14 +9,18 @@ import { MultiplayerContext } from "../contexts/MultiplayerContext";
 
 function MultiplayerPage() {
   const {
+    channel,
+    setChannel,
     playerId,
     setPlayerId,
+    setPlayers,
     playerName,
     setPlayerName,
     roomId,
+    socket,
     setSocket,
-    setRoomId,  } =
-    useContext(MultiplayerContext);
+    setRoomId,
+  } = useContext(MultiplayerContext);
   const [roomCode1, setRoomCode1] = useState("");
   const [roomCode2, setRoomCode2] = useState("");
   const [roomCreated, setRoomCreated] = useState(false);
@@ -69,7 +73,7 @@ function MultiplayerPage() {
         setRoomId(res.data.roomId);
         setRoomCreated(true);
       });
-    }
+  }
 
   function joinExistingHandler(event) {
     setJoinExisting(true);
@@ -92,20 +96,55 @@ function MultiplayerPage() {
 
     if (event !== null) event.preventDefault();
 
-    navigate("/room/" + roomId);
+    const channel = socket.channel("room:" + roomId, {
+      playerName: playerName,
+    });
+
+    channel
+      .join()
+      .receive("ok", () => {
+        console.log("joined successfully");
+        setChannel(channel);
+      })
+      .receive("error", () => {
+        console.log("error");
+        setMessage("No such room exists!");
+        return;
+      });
+    return () => {
+      channel.leave();
+    };
   }
+
+  function onJoin(array) {
+    setPlayers(array);
+    if (!roomJoin) {
+      setRoomJoin(true);
+      navigate("/room/" + roomId);
+    }
+  }
+
+  useEffect(() => {
+    if (channel !== null) {
+      channel.on("joined", (msg) => {
+        console.log("joined received on multiplayer page");
+        onJoin(
+          msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
+        );
+      });
+    }
+  }, [channel]);
 
   useEffect(() => {
     if (!roomCreated) return;
     handleJoin(null);
   }, [roomCreated]);
 
-  // useEffect(() => {
-  //   if (roomJoin) {
-  //     console.log("successful room join");
-  //     navigate("/multiplayer/game");
-  //   }
-  // }, [roomJoin]);
+  //   useEffect(() => {
+  //     if (roomJoin) {
+  //       console.log("successful room join");
+  //     }
+  //   }, [roomJoin]);
 
   return (
     <div className="flex flex-col h-full">
