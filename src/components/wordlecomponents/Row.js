@@ -4,7 +4,7 @@ function Row(props) {
         return (
             <div className="row past">
                 {props.guess.map((l, i) => (
-                    <div key={i} className={l.color}>{l.key}</div>
+                    <div key={i} className={ "bg-" + l.color + "-500" }>{l.key}</div>
                 ))}
             </div>
         )
