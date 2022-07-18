@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
 import MessageDisplay from "../components/wordlecomponents/MessageDisplay";
+import Title from "../components/Title";
 import { useContext, useState, useEffect } from "react";
 import { MultiplayerContext } from "../contexts/MultiplayerContext";
 
@@ -25,7 +26,7 @@ function MultiplayerPage() {
   const [roomCreated, setRoomCreated] = useState(false);
   const [roomJoin, setRoomJoin] = useState(false);
   const [joinExisting, setJoinExisting] = useState(false);
-  const [message, setMessage] = useState("or existing room ID:");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,13 +56,9 @@ function MultiplayerPage() {
     setRoomCode1(event.target.value);
   }
 
-  function handleRC2(event) {
-    setRoomCode2(event.target.value);
-  }
-
   useEffect(() => {
-    setRoomId(roomCode1 + "-" + roomCode2);
-  }, [roomCode1, roomCode2]);
+    setRoomId(roomCode1);
+  }, [roomCode1]);
 
   function handleCreate(event) {
     console.log("handleCreate");
@@ -89,10 +86,6 @@ function MultiplayerPage() {
     if (joinExisting) {
       if (roomCode1.length < 5) {
         setMessage("First roomcode is too short.");
-        return;
-      }
-      if (roomCode2.length < 5) {
-        setMessage("Second roomcode is too short.");
         return;
       }
     }
@@ -140,7 +133,6 @@ function MultiplayerPage() {
 
   useEffect(() => {
     if (channel !== null) {
-
     }
   }, [channel]);
 
@@ -150,52 +142,44 @@ function MultiplayerPage() {
   }, [roomCreated]);
 
   return (
-    <div>
-      <h1>Mordle</h1>
-      <h3>Multiplayer</h3>
-      <h2>Speed Rounds</h2>
-
-      <form className="menu">
-        <input
-          className="input"
-          type="text"
-          placeholder="Name"
-          onChange={handleNameChange}
-          required
-        ></input>
-        <br />
+    <div className="flex flex-col h-full">
+      <div className="h-1/4 flex-none flex justify-center">
+        <Title></Title>
+      </div>
+      <div className="h-1/4 flex flex-col justify-center">
+        <h1 className="mx-auto text-3xl">Multiplayer</h1>
+        <div className="flex flex-col items-center gap-6">
+          <input
+            className="input p-3 mt-6 text-2xl text-center select-none"
+            type="text"
+            placeholder="Name"
+            onChange={handleNameChange}
+            required
+            ></input>
+        </div>
+      </div>
+      <div className="h-2/4 flex flex-col items-center mt-4">
         <button
-          className="button6"
-          onClick={(e) => {
-            handleCreate(e);
-          }}
+          className="bg-tpurple"
+          onClick={handleCreate}
         >
-          Create New Room
+          Create Room
         </button>
-        <div className="message">
-          <MessageDisplay message={message} />
+        <h2 className="mt-4 mb-4">OR</h2>
+        <div className="rounded-2xl border-2 border-gray-200 p-4 flex flex-col items-center gap-4">
+          <div>
+            <input
+              className="w-48 p-3 text-2xl text-center select-none font-mono"
+              type="text"
+              maxLength={11}
+              onChange={handleRC1}
+            ></input>
+          </div>
+          <button className="bg-torange" onClick={joinExistingHandler}>
+            Join Room
+          </button>
         </div>
-        <div>
-          <input
-            className="inputsplit"
-            type="text"
-            placeholder=""
-            maxLength={5}
-            onChange={handleRC1}
-          ></input>
-          <p className="inbetween">-</p>
-          <input
-            className="inputsplit"
-            type="text"
-            placeholder=""
-            maxLength={5}
-            onChange={handleRC2}
-          ></input>
-        </div>
-        <button className="button7" onClick={joinExistingHandler}>
-          Join Room
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

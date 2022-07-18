@@ -14,7 +14,6 @@ function App() {
     <AppProvider>
       <WordleProvider>
         <MultiplayerProvider>
-          <div>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/singleplayer" element={<SingleplayerPage />} />
@@ -24,7 +23,6 @@ function App() {
                 element={<MultiplayerGamePage />}
               />
             </Routes>
-          </div>
         </MultiplayerProvider>
       </WordleProvider>
     </AppProvider>

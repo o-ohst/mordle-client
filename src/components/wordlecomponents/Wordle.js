@@ -133,9 +133,10 @@ function Wordle(props) {
   }, [handleKeyUp]);
 
   return (
-    <div>
-      <Grid currentGuess={currentGuess} guesses={guesses} row={row} />
+    <div className="flex flex-col items-center mt-3">
+      <Grid className="h-2/3" currentGuess={currentGuess} guesses={guesses} row={row} />
       <Keyboard
+        className="h-1/3 w-full"
         usedLetters={usedLetters}
         message={message}
         handleKeyUp={handleKeyUp}

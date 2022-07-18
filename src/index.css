@@ -1,8 +1,261 @@
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-body {
+@layer base {
+  h1 {
+    @apply text-4xl text-white select-none;
+  }
+
+  h2 {
+    @apply text-2xl text-white select-none;
+  }
+
+  h3 {
+    @apply text-lg text-white select-none;
+  }
+
+  h4 {
+    @apply text-base text-white select-none;
+  }
+
+  h5 {
+    @apply text-white select-none;
+  }
+
+  h6 {
+    @apply text-white select-none;
+  }
+
+  p {
+    @apply text-sm text-white select-none;
+  }
+
+  a {
+    @apply text-white select-none;
+  }
+
+  html, body, div#root{
+    @apply h-full
+  }
+
+  button {
+    @apply bg-tpink text-white select-none rounded-xl p-3 w-48 text-2xl transition ease-in-out hover:-translate-y-1 active:translate-y-1 hover:ring hover:ring-white hover:ring-offset-4 hover:ring-offset-tblue focus:outline-none focus:-translate-y-1 focus:ring focus:ring-white focus:ring-offset-4 focus:ring-offset-tblue
+  }
+
+  input {
+    @apply bg-white text-tblue select-none rounded-xl p-2 w-48 text-lg focus:outline-none focus:ring focus:ring-white focus:ring-offset-4 focus:ring-offset-tblue
+  }
+
+
+}
+
+@tailwind components;
+
+@layer components{
+
+  .row {
+    @apply flex flex-row items-center justify-center
+  }
+
+  .letterbox {
+      @apply  text-white border-2 uppercase font-bold text-4xl
+      border-white w-14 h-14 m-1.5 flex justify-center items-center select-none
+    }
+
+  .keyboard {
+    @apply bottom-14 flex flex-col text-white justify-center items-center align-middle overflow-hidden gap-2 mt-6 px-4
+  }
+
+  .keyrow {
+    @apply flex flex-row text-white justify-items-stretch items-center overflow-hidden gap-2 w-full
+  }
+
+  .key {
+    @apply text-white text-3xl border-2 select-none text-center flex items-center justify-center grow basis-0 h-14
+  }
+
+}
+
+@tailwind utilities;
+/* 
+.row {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.row>div {
+  display: block;
+  width: 60px;
+  height: 60px;
+  border: 1px solid #bbb;
+  margin: 4px;
+  text-align: center;
+  line-height: 60px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 2.5em;
+}
+
+.row>div.green {
+  background: #5ac85a;
+  border-color: #5ac85a;
+  color: black;
+}
+
+.row>div.grey {
+  background: #e3e3e3;
+  border-color: #e3e3e3;
+  color: black;
+}
+
+.row>div.yellow {
+  background: #e2cc68;
+  border-color: #e2cc68;
+  color: black;
+}
+
+.row.current>div.filled {
+  animation: bounce 0.15s ease-in-out forwards;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+    border-color: #ddd;
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+    border-color: rgb(252, 252, 252);
+  }
+}
+
+.keypad {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin: 0 auto;
+  padding-top: 0rem;
+  max-width: 30rem;
+}
+
+.keypad>div.row {
+  display: flex;
+  width: 100%;
+  margin: 0 auto 8px;
+  touch-action: "manipulation";
+}
+
+.keypad>div.row>div.letter {
+  flex: 0.5;
+  font-family: inherit;
+  border: 1;
+  margin: 0 6px 0 0;
+  height: 58px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+
+  color: rgb(255, 255, 255);
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.keypad>div.row>div.green {
+  flex: 0.5;
+  font-family: inherit;
+  border: 1;
+  margin: 0 6px 0 0;
+  height: 58px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+
+  color: #000000;
+  background-color: #5ac85a;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: rgb(53, 53, 53);
+}
+
+.keypad>div.row>div.grey {
+  flex: 0.5;
+  font-family: inherit;
+  border: 1;
+  margin: 0 6px 0 0;
+  height: 58px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+
+  color: #000000;
+  background-color: #e3e3e3;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: rgb(53, 53, 53);
+}
+
+.keypad>div.row>div.yellow {
+  flex: 0.5;
+  font-family: inherit;
+  border: 1;
+  margin: 0 6px 0 0;
+  height: 58px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+
+  color: #000000;
+  background-color: #e2cc68;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: rgb(53, 53, 53);
+}
+
+
+.keypad>div.row>div.button {
+  flex: 1;
+  font-family: inherit;
+  border: 1;
+  margin: 0 6px 0 0;
+  height: 58px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+
+  color: rgb(255, 255, 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.multiplayerbar {
+  font-weight: 100;
+  max-width: 100%;
+  max-height: 20%;
+  font-size: 1rem;
+}
+
+.multiplayerbar>div.timer {
+  width: 20%;
+} */
+
+/* body {
   text-align: center;
   font-size: 1em;
   font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica,
@@ -505,4 +758,4 @@ label {
   box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
   color: rgba(0, 0, 0, 0.65);
   transform: translateY(0);
-}
+} */
