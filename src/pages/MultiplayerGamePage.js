@@ -18,6 +18,7 @@ function MultiplayerGamePage() {
     roomId,
     players,
     setPlayers,
+    round,
     setRound,
     setRoundEnd,
     setGameEnd,
@@ -44,6 +45,8 @@ function MultiplayerGamePage() {
   stateRef.current = players;  
   const stateRef2 = useRef();
   stateRef2.current = finalScores;
+  const roundRef = useRef();
+  roundRef.current = round;
 
   const { time, start, pause, reset } = useTimer({
     initialTime: 180,
@@ -62,7 +65,6 @@ function MultiplayerGamePage() {
       setGuesses([...Array(6)]);
       setHistory([[],[]]);
       setRow(0);
-      setRound(0);
       setUsedLetters({});
       setDisableGrid(true);
     }, 2000);
@@ -99,10 +101,10 @@ function MultiplayerGamePage() {
       });
     setFinalScores(new_finals);
     setAllReady(true);
-    start();
   }
 
   function endRound(word) {
+    pause();
     setMultiBarMessage("The word was: " + word + ", next round starting...");
     setRoundEnd(true);
     resetRound();
@@ -121,7 +123,10 @@ function MultiplayerGamePage() {
     if(!gameStart) {
         setGameStart(true);
     }
-    setRound((prev) => {return prev + 1;});
+    reset();
+    start();
+    console.log(roundRef.current)
+    setRound(roundRef.current + 1);
     setScores();
     setRoundEnd(false);
     setGameEnd(false);
@@ -132,13 +137,14 @@ function MultiplayerGamePage() {
   }
 
   function gameOverHandler(word) {
+    pause();
     setRoundEnd(true);
     setGameEnd(true);
     const highest = stateRef2.current.reduce((total, current) => {
       return current[2] > total[2] ? current : total;
     });
     setMultiBarMessage(
-      "The word was: " + word + highest[1] +" wins!"
+      "The word was: " + word + ". " + highest[1] +" wins!"
     );
   }
 

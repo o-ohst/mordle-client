@@ -13,13 +13,15 @@ function MultiplayerBar(props) {
   
   return (
     <div>
-        <div className="multiplayerbar flex flex-row text-white items-center justify-center my-2 gap-2 overflow-x-scroll no-scrollbar">
+        <div className="multiplayerbar flex flex-row text-white items-center justify-center mt-3 mb-2 gap-2 overflow-x-scroll no-scrollbar">
         <div className="flex flex-col items-center">
           <div className="h-5">{round === 0 ? "" : "Round " + round}</div>
           <div className="text-tpink text-xl">{formatTime(props.time)}</div>
         </div>
         <div className="flex flex-row items-center">
-          {finalScores.map((p, i) => {
+          {finalScores
+            .sort((a, b) => (a[2] < b[2]) ? 1 : (b[2] > a[2]) ? -1 : 0)
+            .map((p, i) => {
             return (
               <MultplayerScoreItem
                 key={i}

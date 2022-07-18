@@ -1,6 +1,5 @@
 function MultplayerScoreItem(props) {
     //take in the score of the other players
-  console.log(props.state);
   
     return (
       <div className="flex flex-row items-center text-base mx-1">
@@ -10,7 +9,7 @@ function MultplayerScoreItem(props) {
         </div>
         <h5 className={"text-xs text-center h-4 w-4 rounded-full flex items-center justify-center self-end mb-0.5 " +
           (props.state === "correct" ? "bg-tteal" : (props.state === "ran out" ? "bg-torange" : "bg-tgray"))}>
-          {props.state === "start" ? "0" : props.state === "correct" ? "✔" : props.state === "ran out" ? "✖" : props.state}</h5>
+          {props.state === "start" ? "0" : props.state === "correct" ? "✔" : props.state === "ran out" ? "✖" : props.state === "joined" || props.state === "ready" ? " " : props.state}</h5>
       </div>
     );
   }
