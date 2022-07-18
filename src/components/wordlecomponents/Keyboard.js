@@ -12,25 +12,27 @@ function Keyboard(props) {
     <div className="keyboard">
       <MessageDisplay message={props.message} />
         {letters &&
-          letters.map((row) => {
+          letters.map((row, i) => {
             return (
-              <div className="keyrow">
-                {row.map((l) => {
-                  if (l === "ENTER") {
+              <div className="keyrow" key={i}>
+                {row.map((l, x) => {
+                  if (l === "🡆") {
                     return (
                       <div
                         className="key"
                         onClick={() => keyboardHandler("Enter")}
+                        key={x}
                       >
                         {l}
                       </div>
                     );
                   }
-                  if (l === "DEL") {
+                  if (l === "␡") {
                     return (
                       <div
-                        className="key"
+                        className="key pb-2"
                         onClick={() => keyboardHandler("Backspace")}
+                        key={x}
                       >
                         {l}
                       </div>
@@ -42,6 +44,7 @@ function Keyboard(props) {
                       <div
                         className={"key " + props.usedLetters[lower]}
                         onClick={() => keyboardHandler(lower)}
+                        key={x}
                       >
                         {l}
                       </div>
@@ -51,6 +54,7 @@ function Keyboard(props) {
                     <div
                       className="key"
                       onClick={() => keyboardHandler(l.toLowerCase())}
+                      key={x}
                     >
                       {l}
                     </div>

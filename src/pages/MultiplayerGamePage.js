@@ -210,21 +210,25 @@ function MultiplayerGamePage() {
       setFinish(msg.playerId, msg.result);
     });
 
+    setTimeout(() => {
+      setMouseEnter(true)
+    }, 2000)
+
   }, []);
 
   return (
     <div className="flex flex-col h-full items-center">
-      <div className="h-28 flex-none flex justify-center">
-        <div className="flex mt-8">
-          <img className="my-auto w-16 h-16 hover:animate-bounce" src="/M.png" alt="logo"></img>
-          <img className="my-auto w-32 h-16" src="/ordle.png" alt="logo"></img>
+      <div className="h-[10%] md:h-[20%] flex-none flex justify-center items-center pt-4">
+        <div className="flex">
+          <img className="my-auto w-10 h-10 md:w-20 md:h-20 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-20 h-10 md:w-40 md:h-20 " src="/ordle.png" alt="logo"></img>
         </div>
       </div>
-      <div className="h-5/6 pt-4 flex-none flex justify-center">
+      <div className="h-[90%] md:h-[80%] pt-4 flex-none flex justify-center">
         {validSession ? (
           gameStart ? (
             <div>
-              <MultiplayerBar message={multiBarMessage} />
+              {/* <MultiplayerBar message={multiBarMessage} /> */}
               <Wordle colorFunction={colorFunction} />
             </div>
           ) : (
@@ -244,7 +248,7 @@ function MultiplayerGamePage() {
                       setMouseEnter(false);
                     }}
                     >
-                    <h1 className="text-tblue font-mono text-3xl">{roomId}</h1>
+                    <h1 className="text-tblue font-mono text-xl md:text-2xl">{roomId}</h1>
                   </div>
                 </div>
                 <div className="h-3/5">

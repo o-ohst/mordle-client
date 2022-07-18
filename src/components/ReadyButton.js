@@ -1,19 +1,22 @@
 import { useTimer } from "use-timer";
+import { useState } from "react";
 
 function ReadyButton(props) {
 //   const { time, start } = useTimer({
 //     initialTime: 4,
 //     timerType: "DECREMENTAL",
 //   });
+  
+  const [clicked, setClicked] = useState(false);
 
   if (props.allReady) {
-    return <h4>Game starts in:</h4>;
+    return <h3 className="text-tpurple text-xl md:text-2xl">Game starts in:</h3>;
   }
   if (props.isReady) {
-    return <h4>Waiting for other players...</h4>;
+    return <h3 className="text-tpurple text-xl md:text-2xl">Waiting for other players...</h3>;
   } else {
     return (
-      <button className="button7" onClick={props.readyHandler}>
+      <button className="button bg-tteal" onClick={() => { setClicked(true); }} onTransitionEnd={() => { if (clicked) props.readyHandler(); }}>
         Ready
       </button>
     );

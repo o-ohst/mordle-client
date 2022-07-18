@@ -73,10 +73,10 @@ function SingleplayerPage() {
 
   return (
     <div className="h-full">
-      <div className="h-28 flex-none flex justify-center">
-        <div className="flex mt-4">
-          <img className="my-auto w-12 h-12 hover:animate-bounce" src="/M.png" alt="logo"></img>
-          <img className="my-auto w-24 h-12" src="/ordle.png" alt="logo"></img>
+      <div className="h-[10%] md:h-[20%] flex-none flex justify-center items-center pt-4">
+        <div className="flex">
+          <img className="my-auto w-10 h-10 md:w-20 md:h-20 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-20 h-10 md:w-40 md:h-20 " src="/ordle.png" alt="logo"></img>
         </div>
       </div>
       <Wordle colorFunction={colorFunction} />

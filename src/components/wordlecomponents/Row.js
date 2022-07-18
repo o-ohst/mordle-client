@@ -4,7 +4,7 @@ function Row(props) {
         return (
             <div className="row flex flex-row justify-center items-center">
                 {props.guess.map((l, i) => (
-                    <div key={i} className={"letterbox bg-" + l.color + "-500"}>
+                    <div key={i} className={"letterbox " + (l.color === "green" ? "bg-green-500" : l.color === "yellow" ? "bg-yellow-500" : "bg-gray-500")}>
                         <h6>{ l.key }</h6>
                     </div>
                 ))}
