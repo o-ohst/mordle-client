@@ -23,11 +23,26 @@ function SingleplayerPage() {
 
   const [showModal, setShowModal] = useState(false);
   const [modalMsg, setModalMsg] = useState("");
+  const [timerActive, setTimerActive] = useState(false);
 
-  const { time, start, stop, reset } = useTimer({
-    initialTime: 0,
+  const { time, start, pause, reset } = useTimer({
+    initialTime: -5,
     timerType: "INCREMENTAL",
   });
+
+  useEffect(() => {
+    if (!timerActive) {
+        setDisableGrid(true);
+        start();
+        setTimerActive(true);
+    }
+  }, [timerActive])
+
+  useEffect(() => {
+    if (time === 0) {
+        setDisableGrid(false);
+    }
+  }, [time]);
 
   const url = process.env.REACT_APP_API_URL;
 
@@ -47,32 +62,62 @@ function SingleplayerPage() {
     }
   }, [playedToday]);
 
-  function colorFunction(guess) {
+  function colorFunction(currGuess, func) {
     axios
       .post(url + "/guess", {
-        guess: guess,
+        guess: currGuess,
       })
       .then((res) => {
-        console.log("Received colors: " + res.score);
-        setReceivedColors(res.score);
+        console.log("Received colors: " + res.data.score);
+        func(res.data.score);
       });
     return;
   }
 
   useEffect(() => {
     if (receivedColors === "22222") {
-      if (loggedIn && !playedToday) {
-        axios.post(url + "/end-game", {
-          scores: history[1],
-          timeTaken: 1,
-        });
+      if (!playedToday) {
+        pause();
+        setDisableGrid(true);
+        axios
+          .post(url + "/end-game", {
+            scores: history[1],
+            timeTaken: time,
+          })
+          .then((res) => {
+            setModalMsg("The word was: " + res.data.word);
+            setShowModal(true);
+          });
+        setPlayedToday(true);
+        return;
       }
     }
-  });
+
+    if (history[0].length === 6) {
+      if (!playedToday) {
+        pause();
+        setDisableGrid(true);
+        axios
+          .post(url + "/end-game", {
+            scores: history[1],
+            timeTaken: time,
+          })
+          .then((res) => {
+            setModalMsg(
+              "The word was: " + res.word + ". Better luck next time!"
+            );
+            setShowModal(true);
+          });
+        setPlayedToday(true);
+        return;
+      }
+    }
+  }, [history]);
 
   return (
     <div>
       <h1>Mordle</h1>
+      <h2>{"Time elapsed: " + time + " seconds"}</h2>
       <Wordle colorFunction={colorFunction} />
       {showModal && <WordleModal message={modalMsg} />}
     </div>

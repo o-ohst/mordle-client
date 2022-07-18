@@ -11,7 +11,9 @@ export function AppProvider({children}) {
     loggedIn,
     setLoggedIn,
     userId,
-    setUserId
+    setUserId,
+    playedToday,
+    setPlayedToday
     };
 
     return (
