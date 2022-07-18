@@ -131,9 +131,8 @@ function SingleplayerPage() {
       ) : (
 
         <h3 className="text-center text-tpink md:text-2xl">
-          {"Time taken: " +
-            minutes +
-            " : " +
+          {minutes +
+            ":" +
             (seconds < 10 ? "0" + seconds : seconds)}
         </h3>
       )}
