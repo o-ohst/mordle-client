@@ -7,7 +7,7 @@ import ReadyButton from "../components/ReadyButton";
 import { WordleContext } from "../contexts/WordleContext";
 import MultiplayerBar from "../components/wordlecomponents/MultiplayerBar";
 import Title from "../components/Title"
-import { useStopwatch } from "react-timer-hook";
+import { useTimer } from "react-timer-hook";
 
 function MultiplayerGamePage() {
   const {
@@ -48,7 +48,7 @@ function MultiplayerGamePage() {
   const roundRef = useRef();
   roundRef.current = round;
 
-  const { minutes, seconds, start, pause, reset } = useStopwatch({});
+  const { minutes, seconds, pause, restart } = useTimer({});
 
   function backHome() {
     navigate("/");
@@ -119,8 +119,9 @@ function MultiplayerGamePage() {
     if(!gameStart) {
         setGameStart(true);
     }
-    reset();
-    start();
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + 180)
+    restart(time);
     console.log(roundRef.current)
     setRound(roundRef.current + 1);
     setScores();

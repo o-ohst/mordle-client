@@ -16,7 +16,7 @@ function MultiplayerBar(props) {
         </div>
         <div className="flex flex-row items-center">
           {finalScores
-            .sort((a, b) => (a[2] < b[2]) ? 1 : (b[2] > a[2]) ? -1 : 0)
+            .sort((a, b) => (a[2] < b[2]) ? 1 : (a[2] > b[2]) ? -1 : 0)
             .map((p, i) => {
             return (
               <MultplayerScoreItem
