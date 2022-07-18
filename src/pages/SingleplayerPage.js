@@ -5,7 +5,9 @@ import Title from "../components/Title";
 import WordleModal from "../components/wordlecomponents/WordleModal";
 import { AppContext } from "../contexts/AppContext";
 import { WordleContext } from "../contexts/WordleContext";
-import { useTimer } from "use-timer";
+import { useTimer, useStopwatch } from "react-timer-hook";
+
+// import { useTimer } from "use-timer";
 
 function SingleplayerPage() {
   const { loggedIn, playedToday, setPlayedToday } = useContext(AppContext);
@@ -22,30 +24,11 @@ function SingleplayerPage() {
     setReceivedColors,
   } = useContext(WordleContext);
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalMsg, setModalMsg] = useState("");
-  const [timerActive, setTimerActive] = useState(false);
-
-  const { time, start, pause, reset } = useTimer({
-    initialTime: 0,
-    timerType: "INCREMENTAL",
-  });
-
-  useEffect(() => {
-    if (!timerActive) {
-        setDisableGrid(true);
-        start();
-        setTimerActive(true);
-    }
-  }, [timerActive])
-
-  useEffect(() => {
-    if (time === 0) {
-        setDisableGrid(false);
-    }
-  }, [time]);
-
+  const [gameEnd, setGameEnd] = useState(false);
+  const [topMessage, setTopMsg] = useState("");
   const url = process.env.REACT_APP_API_URL;
+
+  const { minutes, seconds, start, pause, reset } = useStopwatch({});
 
   useEffect(() => {
     if (loggedIn && !playedToday) {
@@ -58,14 +41,19 @@ function SingleplayerPage() {
   useEffect(() => {
     if (playedToday) {
       setDisableGrid(true);
-      setModalMsg("You have played once today, come back tommorrow!");
-      setShowModal(true);
+      setTopMsg("You have played once today, come back tomorrow!");
+    } else {
+      start();
     }
   }, [playedToday]);
 
-  function formatTime(seconds) {
-    return (seconds / 60 < 1 ? "0" : Math.floor(seconds/60)) + (seconds % 60 < 10 ? ":0" : ":") + (seconds%60);
-  }
+  //   useEffect(() => {
+  //     if (!timerActive && !playedToday) {
+  //         setDisableGrid(true);
+  //         start();
+  //         setTimerActive(true);
+  //     }
+  //   }, [timerActive, playedToday]);
 
   function colorFunction(currGuess, func) {
     axios
@@ -87,15 +75,19 @@ function SingleplayerPage() {
         axios
           .post(url + "/end-game", {
             scores: history[1],
-            timeTaken: time,
+            timeTaken: minutes * 60 + seconds,
           })
           .then((res) => {
-            setModalMsg("The word was: " + res.data.word);
-            setShowModal(true);
+            setTopMsg("The word was: " + res.data.word);
+            setGameEnd(true);
           });
         setPlayedToday(true);
-        return;
       }
+      setTimeout(() => {
+        if (loggedIn) {
+          setTopMsg("View your history on homepage.");
+        }
+      }, 3000);
     }
 
     if (history[0].length === 6) {
@@ -105,18 +97,24 @@ function SingleplayerPage() {
         axios
           .post(url + "/end-game", {
             scores: history[1],
-            timeTaken: time,
+            timeTaken: minutes * 60 + seconds,
           })
           .then((res) => {
-            setModalMsg(
-              "The word was: " + res.word + ". Better luck next time!"
+            setTopMsg(
+              "The word was: " + res.data.word + ". Better luck next time!"
             );
-            setShowModal(true);
+            setGameEnd(true);
           });
         setPlayedToday(true);
-        return;
       }
+      setTimeout(() => {
+        if (loggedIn) {
+          setTopMsg("View your history on homepage.");
+        }
+      }, 3000);
     }
+
+    return;
   }, [history]);
 
   return (
@@ -126,13 +124,22 @@ function SingleplayerPage() {
           <img className="my-auto w-8 h-8 md:w-16 md:h-16 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
           <img className="my-auto w-16 h-8 md:w-32 md:h-16 " src="/ordle.png" alt="logo"></img>
         </div>
+        </div>
+        <div className="my-1 md:my-3">
+      {gameEnd ? (
+        <h2>{topMessage}</h2>
+      ) : (
+
+        <h3 className="text-center text-tpink md:text-2xl">
+          {"Time taken: " +
+            minutes +
+            " : " +
+            (seconds < 10 ? "0" + seconds : seconds)}
+        </h3>
+      )}
+        </div>
+        <Wordle colorFunction={colorFunction} />
       </div>
-      <div className="my-1 md:my-3">
-        <h3 className="text-center text-tpink md:text-2xl">{formatTime(time)}</h3>
-      </div>
-      <Wordle colorFunction={colorFunction} />
-      {showModal && <WordleModal message={modalMsg} />}
-    </div>
   );
 }
 

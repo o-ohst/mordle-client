@@ -32,9 +32,11 @@ function Wordle(props) {
     setHistory((prevHistory) => {
       return [
         [...prevHistory[0], currentGuess],
-        [...prevHistory[1], receivedColors],
+        prevHistory[1]
       ];
     });
+    console.log(history[0]);
+    console.log(history[1]);
     setRow((prevRow) => {
       console.log("increasing row");
       return prevRow + 1;
@@ -74,6 +76,10 @@ function Wordle(props) {
   }
 
   function formatGuess(colors) {
+    setHistory(prevHistory => {
+      return [prevHistory[0],
+    [...prevHistory[1], colors]]
+    });
     setReceivedColors(colors);
     const splitReceivedColors = [...colors];
     const format_guess = [...currentGuess].map((letter, index) => {
@@ -109,6 +115,7 @@ function Wordle(props) {
         setMessage("This word does not exist!");
         return;
       }
+      setDisableGrid(true);
       props.colorFunction(currentGuess, formatGuess);
     }
     if (key === "Backspace") {
