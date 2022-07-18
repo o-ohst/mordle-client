@@ -26,6 +26,8 @@ function MultiplayerPage() {
   const [roomCreated, setRoomCreated] = useState(false);
   const [roomJoin, setRoomJoin] = useState(false);
   const [joinExisting, setJoinExisting] = useState(false);
+  const [createClicked, setCreateClicked] = useState(false);
+  const [joinClicked, setJoinClicked] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -60,10 +62,9 @@ function MultiplayerPage() {
     setRoomId(roomCode1);
   }, [roomCode1]);
 
-  function handleCreate(event) {
+  function handleCreate() {
     console.log("handleCreate");
     if (playerName === "" || playerName === undefined) return;
-    event.preventDefault();
     axios //http
       .get(process.env.REACT_APP_API_URL + "/create-room", {
         params: { playerId: playerId },
@@ -81,7 +82,7 @@ function MultiplayerPage() {
     return;
   }
 
-  function handleJoin(event) {
+  function handleJoin() {
     console.log("handleJoin: " + roomId + " Name: " + playerName);
     if (joinExisting) {
       if (roomCode1.length < 5) {
@@ -93,9 +94,6 @@ function MultiplayerPage() {
       setMessage("Please use a name");
       return;
     }
-
-    if (event !== null) event.preventDefault();
-
     const channel = socket.channel("room:" + roomId, {
       playerName: playerName,
     });
@@ -161,7 +159,7 @@ function MultiplayerPage() {
       <div className="h-2/4 flex flex-col items-center mt-4">
         <button
           className="bg-tpurple"
-          onClick={handleCreate}
+          onClick={() => { setCreateClicked(true); }} onTransitionEnd={() => { if (createClicked) handleCreate(); }}
         >
           Create Room
         </button>
@@ -175,7 +173,7 @@ function MultiplayerPage() {
               onChange={handleRC1}
             ></input>
           </div>
-          <button className="bg-torange" onClick={joinExistingHandler}>
+          <button className="bg-torange" onClick={() => { setJoinClicked(true); }} onTransitionEnd={() => { if (joinClicked) joinExistingHandler(); } }>
             Join Room
           </button>
         </div>
