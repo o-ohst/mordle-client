@@ -19,7 +19,7 @@ function Keyboard(props) {
                   if (l === "🡆") {
                     return (
                       <div
-                        className="key"
+                        className="key bg-white text-tblue"
                         onClick={() => keyboardHandler("Enter")}
                         key={x}
                       >
@@ -30,7 +30,7 @@ function Keyboard(props) {
                   if (l === "␡") {
                     return (
                       <div
-                        className="key pb-2"
+                        className="key pb-2 fnkey bg-white text-tblue"
                         onClick={() => keyboardHandler("Backspace")}
                         key={x}
                       >
@@ -42,7 +42,7 @@ function Keyboard(props) {
                     const lower = l.toLowerCase();
                     return (
                       <div
-                        className={"key " + props.usedLetters[lower]}
+                        className={"key " + (props.usedLetters[lower] === "green" ? "bg-tgreen" : props.usedLetters[lower] === "yellow" ? "bg-tyellow" : "bg-tgray")}
                         onClick={() => keyboardHandler(lower)}
                         key={x}
                       >

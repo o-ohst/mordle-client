@@ -117,13 +117,15 @@ function SingleplayerPage() {
 
   return (
     <div className="h-full">
-      <div className="h-[10%] md:h-[20%] flex-none flex justify-center items-center pt-4">
+      <div className="h-[10%] flex-none flex justify-center items-center pt-4">
         <div className="flex">
           <img className="my-auto w-10 h-10 md:w-20 md:h-20 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
           <img className="my-auto w-20 h-10 md:w-40 md:h-20 " src="/ordle.png" alt="logo"></img>
         </div>
       </div>
-      <h2>{"Time elapsed: " + time + " seconds"}</h2>
+      <div className="h-[10%]">
+        <h2 className="text-center">{"" + time + " seconds"}</h2>
+      </div>
       <Wordle colorFunction={colorFunction} />
       {showModal && <WordleModal message={modalMsg} />}
     </div>
