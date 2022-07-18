@@ -1,10 +1,10 @@
 function MessageDisplay(props) {
     if (props.message !== "") {
         return (
-            <h3 className="text-center text-torange">{props.message}</h3>
+            <h4 className="text-center text-tteal my-2">{props.message}</h4>
         )
     } else {
-        return (<h3 className = "text-center">&nbsp;</h3>)
+        return (<h4 className = "text-center my-2">&nbsp;</h4>)
     }
 }
 

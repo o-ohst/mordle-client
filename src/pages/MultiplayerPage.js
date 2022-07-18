@@ -143,14 +143,14 @@ function MultiplayerPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="h-1/4 flex-none flex justify-center">
+      <div className="flex justify-center">
         <Title></Title>
       </div>
-      <div className="h-1/4 flex flex-col justify-center">
-        <h1 className="mx-auto text-3xl">Multiplayer</h1>
+      <div className="flex flex-col justify-center">
+        <h1 className="mx-auto text-2xl mt-6">Multiplayer</h1>
         <div className="flex flex-col items-center gap-6">
           <input
-            className="input p-3 mt-6 text-2xl text-center select-none"
+            className="input p-3 mt-6 text-center select-none"
             type="text"
             placeholder="Name"
             onChange={handleNameChange}
@@ -169,7 +169,7 @@ function MultiplayerPage() {
         <div className="rounded-2xl border-2 border-gray-200 p-4 flex flex-col items-center gap-4">
           <div>
             <input
-              className="w-48 p-3 text-2xl text-center select-none font-mono"
+              className="w-48 p-3 text-center select-none font-mono"
               type="text"
               maxLength={11}
               onChange={handleRC1}

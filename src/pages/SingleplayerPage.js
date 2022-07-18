@@ -118,29 +118,28 @@ function SingleplayerPage() {
   }, [history]);
 
   return (
-    <div className="h-full flex flex-col items-center">
-      <div className="h-28 flex-none flex justify-center">
-        <div className="flex mt-4">
-          <img
-            className="my-auto w-12 h-12 hover:animate-bounce"
-            src="/M.png"
-            alt="logo"
-          ></img>
-          <img className="my-auto w-24 h-12" src="/ordle.png" alt="logo"></img>
+    <div className="h-screen">
+      <div className="flex-none flex justify-center items-center pt-3 md:pt-8">
+        <div className="flex">
+          <img className="my-auto w-8 h-8 md:w-16 md:h-16 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-16 h-8 md:w-32 md:h-16 " src="/ordle.png" alt="logo"></img>
         </div>
-      </div>
+        </div>
+        <div className="my-1 md:my-3">
       {gameEnd ? (
         <h2>{topMessage}</h2>
       ) : (
-        <h2>
+
+        <h3 className="text-center text-tpink md:text-2xl">
           {"Time taken: " +
             minutes +
             " : " +
             (seconds < 10 ? "0" + seconds : seconds)}
-        </h2>
+        </h3>
       )}
-      <Wordle colorFunction={colorFunction} />
-    </div>
+        </div>
+        <Wordle colorFunction={colorFunction} />
+      </div>
   );
 }
 
