@@ -61,19 +61,19 @@
 @layer components{
 
   .kgrid {
-    @apply flex flex-1 flex-col place-content-center md:place-content-start box-border gap-1
+    @apply flex flex-1 flex-col place-content-center md:place-content-start box-border
   }
 
   .row {
-    @apply flex flex-row items-center justify-center gap-1
+    @apply flex flex-row items-center justify-center
   }
 
   .letterbox {
-      @apply text-white uppercase font-bold text-4xl flex justify-center items-center select-none w-12 h-12 md:w-16 md:h-16
+      @apply text-white uppercase m-1 font-bold text-4xl flex justify-center items-center select-none w-12 h-12 md:w-16 md:h-16
     }
 
   .keyboard {
-    @apply text-white absolute bottom-0 justify-center items-center align-middle gap-2 mt-2 mb-8 md:mb-12 w-screen px-4 md:w-1/2 lg:w-2/5
+    @apply text-white absolute bottom-0 justify-center items-center align-middle gap-2 mt-2 mb-8 md:mb-12 w-screen px-4 md:w-[500px] lg:w-[500px]
   }
 
   .keyrow {
@@ -100,6 +100,10 @@
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+  }
+
+  .allow-select {
+    -webkit-user-select: text;
   }
 }
 
