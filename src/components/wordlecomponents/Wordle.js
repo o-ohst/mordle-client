@@ -136,9 +136,8 @@ function Wordle(props) {
     <div className="flex flex-col items-center flex-none">
       <Grid currentGuess={currentGuess} guesses={guesses} row={row} />
       <Keyboard
-        className="w-full"
         usedLetters={usedLetters}
-        message={message}
+        message={props.message !== null ? props.message : message}
         handleKeyUp={handleKeyUp}
       />
     </div>

@@ -143,11 +143,11 @@ function MultiplayerPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="h-1/4 flex-none flex justify-center">
+      <div className="flex justify-center">
         <Title></Title>
       </div>
-      <div className="h-1/4 flex flex-col justify-center">
-        <h1 className="mx-auto text-3xl">Multiplayer</h1>
+      <div className="flex flex-col justify-center">
+        <h1 className="mx-auto text-2xl mt-6">Multiplayer</h1>
         <div className="flex flex-col items-center gap-6">
           <input
             className="input p-3 mt-6 text-center select-none"

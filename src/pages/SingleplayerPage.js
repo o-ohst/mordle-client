@@ -121,14 +121,14 @@ function SingleplayerPage() {
 
   return (
     <div className="h-screen">
-      <div className="h-[10vh] flex-none flex justify-center items-center pt-4">
+      <div className="flex-none flex justify-center items-center pt-3 md:pt-8">
         <div className="flex">
-          <img className="my-auto w-10 h-10 md:w-20 md:h-20 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
-          <img className="my-auto w-20 h-10 md:w-40 md:h-20 " src="/ordle.png" alt="logo"></img>
+          <img className="my-auto w-8 h-8 md:w-16 md:h-16 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img className="my-auto w-16 h-8 md:w-32 md:h-16 " src="/ordle.png" alt="logo"></img>
         </div>
       </div>
-      <div className="h-[5vh]">
-        <h3 className="text-center pt-1">{formatTime(time)}</h3>
+      <div className="my-1 md:my-3">
+        <h3 className="text-center text-tpink md:text-2xl">{formatTime(time)}</h3>
       </div>
       <Wordle colorFunction={colorFunction} />
       {showModal && <WordleModal message={modalMsg} />}

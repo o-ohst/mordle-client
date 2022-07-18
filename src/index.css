@@ -18,7 +18,7 @@
   }
 
   h5 {
-    @apply text-white select-none;
+    @apply text-base text-white select-none;
   }
 
   h6 {
@@ -61,23 +61,23 @@
 @layer components{
 
   .kgrid {
-    @apply flex flex-1 place-content-center md:place-content-start box-border gap-0.5
+    @apply flex flex-1 flex-col place-content-center md:place-content-start box-border gap-1
   }
 
   .row {
-    @apply flex flex-row items-center justify-center gap-0.5
+    @apply flex flex-row items-center justify-center gap-1
   }
 
   .letterbox {
-      @apply text-white uppercase font-bold text-4xl m-1 flex justify-center items-center select-none w-12 h-12 md:w-16 md:h-16
+      @apply text-white uppercase font-bold text-4xl flex justify-center items-center select-none w-12 h-12 md:w-16 md:h-16
     }
 
   .keyboard {
-    @apply w-full text-white justify-center items-center align-middle gap-2 mt-2 mb-16 md:mb-8 px-4 md:px-48 lg:px-72
+    @apply text-white absolute bottom-0 justify-center items-center align-middle gap-2 mt-2 mb-8 md:mb-12 w-screen px-4 md:w-1/2 lg:w-2/5
   }
 
   .keyrow {
-    @apply flex flex-row text-white justify-items-stretch items-center overflow-hidden w-full
+    @apply flex flex-row text-white justify-items-stretch items-center overflow-hidden
   }
 
   .key {
@@ -87,6 +87,22 @@
 }
 
 @tailwind utilities;
+
+@layer utilities {
+
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+  }
+}
+
 /* 
 .row {
   text-align: center;

@@ -6,33 +6,32 @@ import MultplayerScoreItem from "./MultiplayerScoreItem";
 function MultiplayerBar(props) {
   const { channel, players, roundEnd, gameEnd, round, finalScores } =
     useContext(MultiplayerContext);
+  
+  function formatTime(seconds) {
+    return (seconds / 60 < 1 ? "0" : Math.floor(seconds / 60)) + (seconds % 60 < 10 ? ":0" : ":") + (seconds % 60);
+  }
+  
   return (
     <div>
-      {roundEnd ? (
-        gameEnd ? (
-          <MessageDisplay message={props.message} />
-        ) : (
-          <MessageDisplay message={props.message} />
-        )
-      ) : (
-        <div className="multiplayerbar">
-          <div>{round === 0 ? "" : "Round: " + round}</div>
-          <div className="h4">{channel.topic}</div>
-          <div className="multiplayerbar">
-            {finalScores.map((p, i) => {
-              return (
-                <MultplayerScoreItem
-                  key={i}
-                  playerName={p[1]}
-                  score={p[2]}
-                  state={players.filter((x) => p[0] === x[0])[0][2]}
-                />
-              );
-            })}
-          </div>
-          <div></div>
+        <div className="multiplayerbar flex flex-row text-white items-center justify-center my-2 gap-2 overflow-x-scroll no-scrollbar">
+        <div className="flex flex-col items-center">
+          <div className="h-5">{round === 0 ? "" : "Round " + round}</div>
+          <div className="text-tpink text-xl">{formatTime(props.time)}</div>
         </div>
-      )}
+        <div className="flex flex-row items-center">
+          {finalScores.map((p, i) => {
+            return (
+              <MultplayerScoreItem
+                key={i}
+                playerName={p[1]}
+                score={p[2]}
+                state={players.filter((x) => p[0] === x[0])[0][2]}
+              />
+            );
+          })}
+        </div>
+        <div></div>
+        </div>
     </div>
   );
 }

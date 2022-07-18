@@ -11,11 +11,11 @@ function HomePage() {
 
   return (
     <div className="flex flex-col h-screen items-center">
-      <div className="h-[25vh] flex-none flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center">
         <Title></Title>
       </div>
-      <div className="h-[75vh] flex-none flex flex-col">
-        <div className="link w-fit mx-auto mt-12 md:mt-16">
+      <div className="flex flex-col mt-16 md:mt-24">
+        <div className="link w-fit mx-auto">
           <button className="bg-tteal text-white mb-4" onClick={() => { setSingleClicked(true); }} onTransitionEnd={() => { if (singleClicked) navigate("/singleplayer"); }}>
             Singleplayer
           </button>

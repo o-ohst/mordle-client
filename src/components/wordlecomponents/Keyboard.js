@@ -16,7 +16,7 @@ function Keyboard(props) {
             return (
               <div className="keyrow" key={i}>
                 {row.map((l, x) => {
-                  if (l === "🡆") {
+                  if (l === "→") {
                     return (
                       <div
                         className="key bg-white text-tblue"
