@@ -27,7 +27,7 @@ function SingleplayerPage() {
   const [timerActive, setTimerActive] = useState(false);
 
   const { time, start, pause, reset } = useTimer({
-    initialTime: -5,
+    initialTime: 0,
     timerType: "INCREMENTAL",
   });
 
@@ -62,6 +62,10 @@ function SingleplayerPage() {
       setShowModal(true);
     }
   }, [playedToday]);
+
+  function formatTime(seconds) {
+    return (seconds / 60 < 1 ? "0" : Math.floor(seconds/60)) + (seconds % 60 < 10 ? ":0" : ":") + (seconds%60);
+  }
 
   function colorFunction(currGuess, func) {
     axios
@@ -116,15 +120,15 @@ function SingleplayerPage() {
   }, [history]);
 
   return (
-    <div className="h-full">
-      <div className="h-[10%] flex-none flex justify-center items-center pt-4">
+    <div className="h-screen">
+      <div className="h-[10vh] flex-none flex justify-center items-center pt-4">
         <div className="flex">
           <img className="my-auto w-10 h-10 md:w-20 md:h-20 animate-spin hover:animate-bounce" src="/M.png" alt="logo"></img>
           <img className="my-auto w-20 h-10 md:w-40 md:h-20 " src="/ordle.png" alt="logo"></img>
         </div>
       </div>
-      <div className="h-[10%]">
-        <h2 className="text-center">{"" + time + " seconds"}</h2>
+      <div className="h-[5vh]">
+        <h3 className="text-center pt-1">{formatTime(time)}</h3>
       </div>
       <Wordle colorFunction={colorFunction} />
       {showModal && <WordleModal message={modalMsg} />}

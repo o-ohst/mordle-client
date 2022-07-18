@@ -15,7 +15,7 @@ module.exports = {
         'tpink': '#e67ac5',
         'tteal': '#4fc9af',
         'torange': '#F87060',
-        'tyellow': '#d18d02',
+        'tyellow': '#d1a919',
         'tgray': '#4b4952',
         'tgreen': '#3c826d'
       },

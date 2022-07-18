@@ -133,7 +133,7 @@ function Wordle(props) {
   }, [handleKeyUp]);
 
   return (
-    <div className="flex flex-col items-center h-[80%] flex-none">
+    <div className="flex flex-col items-center flex-none">
       <Grid currentGuess={currentGuess} guesses={guesses} row={row} />
       <Keyboard
         className="w-full"
