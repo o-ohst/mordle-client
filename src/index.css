@@ -42,7 +42,7 @@
   }
 
   input {
-    @apply bg-white text-tblue rounded-xl p-2 w-48 text-lg md:text-2xl focus:outline-none focus:ring focus:ring-white focus:ring-offset-4 focus:ring-offset-tblue
+    @apply bg-white text-tblue select-text rounded-xl p-2 w-48 text-lg md:text-2xl focus:outline-none focus:ring focus:ring-white focus:ring-offset-4 focus:ring-offset-tblue
   }
 
   img {
