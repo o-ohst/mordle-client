@@ -4,6 +4,7 @@ import Title from "../components/Title"
 function HomePage() {
   return (
     <div className="flex flex-col h-full items-center">
+      {/* {showModal && <WordleModal message={modalMsg} startFunc={startFunc} />} */}
       <div className="h-1/4 flex-none flex justify-center">
         <Title></Title>
       </div>

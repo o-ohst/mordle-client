@@ -5,7 +5,9 @@ import Title from "../components/Title";
 import WordleModal from "../components/wordlecomponents/WordleModal";
 import { AppContext } from "../contexts/AppContext";
 import { WordleContext } from "../contexts/WordleContext";
-import { useTimer } from "use-timer";
+import { useTimer, useStopwatch } from "react-timer-hook";
+
+// import { useTimer } from "use-timer";
 
 function SingleplayerPage() {
   const { loggedIn, playedToday, setPlayedToday } = useContext(AppContext);
@@ -22,30 +24,11 @@ function SingleplayerPage() {
     setReceivedColors,
   } = useContext(WordleContext);
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalMsg, setModalMsg] = useState("");
-  const [timerActive, setTimerActive] = useState(false);
-
-  const { time, start, pause, reset } = useTimer({
-    initialTime: -5,
-    timerType: "INCREMENTAL",
-  });
-
-  useEffect(() => {
-    if (!timerActive) {
-        setDisableGrid(true);
-        start();
-        setTimerActive(true);
-    }
-  }, [timerActive])
-
-  useEffect(() => {
-    if (time === 0) {
-        setDisableGrid(false);
-    }
-  }, [time]);
-
+  const [gameEnd, setGameEnd] = useState(false);
+  const [topMessage, setTopMsg] = useState("");
   const url = process.env.REACT_APP_API_URL;
+
+  const { minutes, seconds, start, pause, reset } = useStopwatch({});
 
   useEffect(() => {
     if (loggedIn && !playedToday) {
@@ -58,10 +41,19 @@ function SingleplayerPage() {
   useEffect(() => {
     if (playedToday) {
       setDisableGrid(true);
-      setModalMsg("You have played once today, come back tommorrow!");
-      setShowModal(true);
+      setTopMsg("You have played once today, come back tomorrow!");
+    } else {
+      start();
     }
   }, [playedToday]);
+
+  //   useEffect(() => {
+  //     if (!timerActive && !playedToday) {
+  //         setDisableGrid(true);
+  //         start();
+  //         setTimerActive(true);
+  //     }
+  //   }, [timerActive, playedToday]);
 
   function colorFunction(currGuess, func) {
     axios
@@ -83,15 +75,19 @@ function SingleplayerPage() {
         axios
           .post(url + "/end-game", {
             scores: history[1],
-            timeTaken: time,
+            timeTaken: minutes * 60 + seconds,
           })
           .then((res) => {
-            setModalMsg("The word was: " + res.data.word);
-            setShowModal(true);
+            setTopMsg("The word was: " + res.data.word);
+            setGameEnd(true);
           });
         setPlayedToday(true);
-        return;
       }
+      setTimeout(() => {
+        if (loggedIn) {
+          setTopMsg("View your history on homepage.");
+        }
+      }, 3000);
     }
 
     if (history[0].length === 6) {
@@ -101,31 +97,49 @@ function SingleplayerPage() {
         axios
           .post(url + "/end-game", {
             scores: history[1],
-            timeTaken: time,
+            timeTaken: minutes * 60 + seconds,
           })
           .then((res) => {
-            setModalMsg(
-              "The word was: " + res.word + ". Better luck next time!"
+            setTopMsg(
+              "The word was: " + res.data.word + ". Better luck next time!"
             );
-            setShowModal(true);
+            setGameEnd(true);
           });
         setPlayedToday(true);
-        return;
       }
+      setTimeout(() => {
+        if (loggedIn) {
+          setTopMsg("View your history on homepage.");
+        }
+      }, 3000);
     }
+
+    return;
   }, [history]);
 
   return (
-    <div className="h-full">
+    <div className="h-full flex flex-col items-center">
       <div className="h-28 flex-none flex justify-center">
         <div className="flex mt-4">
-          <img className="my-auto w-12 h-12 hover:animate-bounce" src="/M.png" alt="logo"></img>
+          <img
+            className="my-auto w-12 h-12 hover:animate-bounce"
+            src="/M.png"
+            alt="logo"
+          ></img>
           <img className="my-auto w-24 h-12" src="/ordle.png" alt="logo"></img>
         </div>
       </div>
-      <h2>{"Time elapsed: " + time + " seconds"}</h2>
+      {gameEnd ? (
+        <h2>{topMessage}</h2>
+      ) : (
+        <h2>
+          {"Time taken: " +
+            minutes +
+            " : " +
+            (seconds < 10 ? "0" + seconds : seconds)}
+        </h2>
+      )}
       <Wordle colorFunction={colorFunction} />
-      {showModal && <WordleModal message={modalMsg} />}
     </div>
   );
 }
