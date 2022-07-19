@@ -48,7 +48,7 @@ function MultiplayerGamePage() {
   const roundRef = useRef();
   roundRef.current = round;
 
-  const { minutes, seconds, pause, restart } = useTimer({});
+  const { minutes, seconds, pause, restart } = useTimer({ expiryTimestamp: (new Date()).getSeconds() + 180 });
 
   function backHome() {
     navigate("/");

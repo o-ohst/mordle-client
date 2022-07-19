@@ -21,13 +21,12 @@ function MultiplayerPage() {
     setSocket,
     setRoomId,
   } = useContext(MultiplayerContext);
-  const [roomCode1, setRoomCode1] = useState("");
-  const [roomCode2, setRoomCode2] = useState("");
   const [roomCreated, setRoomCreated] = useState(false);
-  const [roomJoin, setRoomJoin] = useState(false);
-  const [joinExisting, setJoinExisting] = useState(false);
+  const [roomJoined, setRoomJoined] = useState(false);
   const [createClicked, setCreateClicked] = useState(false);
   const [joinClicked, setJoinClicked] = useState(false);
+  const [joinEnabled, setJoinEnabled] = useState(true);
+  const [createEnabled, setCreateEnabled] = useState(true)
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -54,17 +53,17 @@ function MultiplayerPage() {
     setPlayerName(event.target.value);
   }
 
-  function handleRC1(event) {
-    setRoomCode1(event.target.value);
+  function handleRoomIdChange(event) {
+    setRoomId(event.target.value);
   }
-
-  useEffect(() => {
-    setRoomId(roomCode1);
-  }, [roomCode1]);
 
   function handleCreate() {
     console.log("handleCreate");
-    if (playerName === "" || playerName === undefined) return;
+    if (playerName === "" || playerName === undefined) {
+      setMessage("Your name ain't it");
+      setCreateEnabled(true);
+      return;
+    }
     axios //http
       .get(process.env.REACT_APP_API_URL + "/create-room", {
         params: { playerId: playerId },
@@ -73,47 +72,53 @@ function MultiplayerPage() {
         console.log(res.data);
         setRoomId(res.data.roomId);
         setRoomCreated(true);
+      }).catch(err => {
+        setMessage(err.message);
+        setCreateEnabled(true);
       });
-  }
-
-  function joinExistingHandler(event) {
-    setJoinExisting(true);
-    handleJoin(event);
-    return;
   }
 
   function handleJoin() {
     console.log("handleJoin: " + roomId + " Name: " + playerName);
-    if (joinExisting) {
-      if (roomCode1.length < 5) {
-        setMessage("First roomcode is too short.");
-        return;
-      }
-    }
     if (playerName === "" || playerName === undefined) {
-      setMessage("Please use a name");
+      setMessage("Your name ain't it");
+      setJoinEnabled(true);
       return;
     }
-    const channel = socket.channel("room:" + roomId, {
-      playerName: playerName,
+    if (roomId.length < 11) {
+      setMessage("Your room code ain't it");
+      setJoinEnabled(true);
+      return;
+    }    
+    joinRoom(roomId, playerName);
+  }
+
+  function joinRoom(id, name) {
+
+    console.log("joinRoom ")
+
+    const channel = socket.channel("room:" + id, {
+      playerName: name,
     });
 
     channel.on("joined", (msg) => {
-        console.log("joined received on multiplayer page");
-        onJoin(
-          msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
-        );
-      });
+      console.log("joined received on multiplayer page");
+      onPlayerJoin(
+        msg.data.players.map((x) => [x.playerId, x.playerName, x.state])
+      );
+    });
 
     channel
       .join()
       .receive("ok", () => {
         console.log("joined successfully");
         setChannel(channel);
+        setRoomJoined(true);
       })
       .receive("error", () => {
         console.log("error");
-        setMessage("No such room exists!");
+        setMessage("Your room code is cap");
+        setJoinEnabled(true);
         return;
       });
     return () => {
@@ -121,23 +126,20 @@ function MultiplayerPage() {
     };
   }
 
-  function onJoin(array) {
+  function onPlayerJoin(array) {
     setPlayers(array);
-    if (!roomJoin) {
-      setRoomJoin(true);
-      navigate("/room/" + roomId);
-    }
   }
 
   useEffect(() => {
-    if (channel !== null) {
-    }
-  }, [channel]);
+    if (!roomCreated) return;
+    joinRoom(roomId, playerName);
+  }, [roomCreated]);
 
   useEffect(() => {
-    if (!roomCreated) return;
-    handleJoin(null);
-  }, [roomCreated]);
+    if (!roomJoined) return;
+    navigate("/room/" + roomId)
+  }, [roomJoined]);
+
 
   return (
     <div className="flex flex-col h-full">
@@ -159,21 +161,23 @@ function MultiplayerPage() {
       <div className="h-2/4 flex flex-col items-center mt-4">
         <button
           className="bg-tpurple"
-          onClick={() => { setCreateClicked(true); }} onTransitionEnd={() => { if (createClicked) handleCreate(); }}
+          onClick={() => { if (createEnabled) { setCreateEnabled(false); setCreateClicked(true); } }} onTransitionEnd={() => { if (createClicked) { setCreateClicked(false); handleCreate(); } }}
         >
           Create Room
         </button>
-        <h2 className="mt-4 mb-4">OR</h2>
+        <div className="py-4">
+          {message === "" ? <h2>OR</h2> : <MessageDisplay message={message}></MessageDisplay>}
+        </div>
         <div className="rounded-2xl border-2 border-gray-200 p-4 flex flex-col items-center gap-4">
           <div>
             <input
               className="w-48 p-3 text-center font-mono"
               type="text"
               maxLength={11}
-              onChange={handleRC1}
+              onChange={handleRoomIdChange}
             ></input>
           </div>
-          <button className="bg-torange" onClick={() => { setJoinClicked(true); }} onTransitionEnd={() => { if (joinClicked) joinExistingHandler(); } }>
+          <button className="bg-torange" onClick={() => { if (joinEnabled) { setJoinEnabled(false); setJoinClicked(true); } }} onTransitionEnd={() => { if (joinClicked) { setJoinClicked(false); handleJoin(); } } }>
             Join Room
           </button>
         </div>
