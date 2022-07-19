@@ -30,23 +30,41 @@ function MultiplayerPage() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  function resetAll() {
+    setChannel(null);
+    setRoomId("");
+    setPlayerId("");
+    setPlayerName("");
+    setRoomCreated(false);
+    setRoomJoined(false);
+    setCreateClicked(false);
+    setJoinClicked(false);
+    setJoinEnabled(true);
+    setCreateEnabled(true);
+    setMessage("");
+  }
+
   useEffect(() => {
     console.log("useEffect, []");
-    axios.get(process.env.REACT_APP_API_URL + "/register").then((res) => {
-      setPlayerId(res.data.playerId);
-    });
+    resetAll();
+    if (playerId === "" || playerId === undefined) {
+      axios.get(process.env.REACT_APP_API_URL + "/register").then((res) => {
+        setPlayerId(res.data.playerId);
+      });
+    }
   }, []);
 
   useEffect(() => {
     //connect to socket after setting playerId
     if (playerId === "" || playerId === undefined) return;
+    if (!(socket === null || socket === undefined)) return;
     console.log("useEffect, playerId");
-    const socket = new Socket(process.env.REACT_APP_WS_URL, {
+    const ss = new Socket(process.env.REACT_APP_WS_URL, {
       params: { playerId: playerId },
     });
-    socket.connect();
-    setSocket(socket);
-    console.log(socket);
+    ss.connect();
+    setSocket(ss);
+    console.log(ss);
   }, [playerId]);
 
   function handleNameChange(event) {
@@ -115,9 +133,11 @@ function MultiplayerPage() {
         setChannel(channel);
         setRoomJoined(true);
       })
-      .receive("error", () => {
+      .receive("error", ({ reason }) => {
         console.log("error");
-        setMessage("Your room code is cap");
+        reason === "invalid room id"
+          ? setMessage("Your room code is cap")
+          : setMessage(reason)
         setJoinEnabled(true);
         return;
       });
@@ -154,6 +174,7 @@ function MultiplayerPage() {
             type="text"
             placeholder="Name"
             onChange={handleNameChange}
+            value={playerName}
             required
             ></input>
         </div>
@@ -175,6 +196,7 @@ function MultiplayerPage() {
               type="text"
               maxLength={11}
               onChange={handleRoomIdChange}
+              value={roomId}
             ></input>
           </div>
           <button className="bg-torange" onClick={() => { if (joinEnabled) { setJoinEnabled(false); setJoinClicked(true); } }} onTransitionEnd={() => { if (joinClicked) { setJoinClicked(false); handleJoin(); } } }>
