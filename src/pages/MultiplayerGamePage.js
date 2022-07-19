@@ -1,5 +1,6 @@
 import { MultiplayerContext } from "../contexts/MultiplayerContext";
-import { useNavigate } from "react-router-dom";
+import { Socket } from "phoenix-socket";
+import { useNavigate, useLocation } from "react-router-dom";
 import PlayerReady from "../components/PlayerReady";
 import Wordle from "../components/wordlecomponents/Wordle";
 import { useState, useContext, useEffect, useRef } from "react";
@@ -11,11 +12,17 @@ import { useTimer } from "react-timer-hook";
 
 function MultiplayerGamePage() {
   const {
+    socket,
+    setSocket,
+    playerId,
     channel,
+    setChannel,
     validSession,
     gameStart,
     setGameStart,
     roomId,
+    setRoomId,
+    playerName,
     players,
     setPlayers,
     round,
@@ -24,6 +31,8 @@ function MultiplayerGamePage() {
     setGameEnd,
     finalScores,
     setFinalScores,
+    timerTime,
+    setTimerTime
   } = useContext(MultiplayerContext);
   const {
     setGuesses,
@@ -32,11 +41,14 @@ function MultiplayerGamePage() {
     setCurrentGuess,
     setDisableGrid,
     setUsedLetters,
-    setMessage
+    setMessage,
+    message,
+    setReceivedColors,
+    guessEnabled,
+    setGuessEnabled
   } = useContext(WordleContext);
   const [isReady, setReady] = useState(false);
   const [allReady, setAllReady] = useState(false);
-  const [multiBarMessage, setMultiBarMessage] = useState("");
   const [copied, setCopied] = useState(false);
   const [mouseEnter, setMouseEnter] = useState(false);
   const navigate = useNavigate();
@@ -48,12 +60,15 @@ function MultiplayerGamePage() {
   const roundRef = useRef();
   roundRef.current = round;
 
-  const { minutes, seconds, pause, restart } = useTimer({ expiryTimestamp: (new Date()).getSeconds() + 180 });
+  const { minutes, seconds, pause, restart } = useTimer({ expiryTimestamp: (timerTime === null || timerTime === undefined) ? (new Date()).getSeconds() + 180 : new Date(timerTime)});
 
   function backHome() {
     navigate("/");
     return;
   }
+
+  const loc = useLocation();
+  const roomLoc = loc.pathname.substring(loc.pathname.length - 11)
 
   function resetRound() {
     setTimeout(() => {
@@ -73,9 +88,12 @@ function MultiplayerGamePage() {
   }
 
   function colorFunction(guess, func) {
+    if (!guessEnabled) return;
+    setGuessEnabled(false);
     channel.push("new_guess", { guess: guess }).receive("ok", (reply) => {
         console.log("Received colors: " + reply.result);
         func(reply.result);
+        setGuessEnabled(true);
     });
   }
 
@@ -101,7 +119,7 @@ function MultiplayerGamePage() {
 
   function endRound(word) {
     pause();
-    setMultiBarMessage("The word was: " + word + ", next round starting...");
+    setMessage("The word was: " + word + ", next round starting...");
     setRoundEnd(true);
     resetRound();
   }
@@ -128,8 +146,13 @@ function MultiplayerGamePage() {
     setRoundEnd(false);
     setGameEnd(false);
     setMessage("");
-    setMultiBarMessage("");
     setDisableGrid(false);
+    setGuesses([...Array(6)]);
+    setHistory([[], []]);
+    setCurrentGuess("");
+    setUsedLetters({});
+    setRow(0)
+    setReceivedColors("");
     return;
   }
 
@@ -140,12 +163,13 @@ function MultiplayerGamePage() {
     const highest = stateRef2.current.reduce((total, current) => {
       return current[2] > total[2] ? current : total;
     });
-    setMultiBarMessage(
+    setMessage(
       "The word was: " + word + ". " + highest[1] +" wins!"
     );
   }
 
   function decreasePlayer(currPlayerId, row) {
+    console.log("decreasePlayer")
     setPlayers((prev) => {
       const new_scores = prev.map((p) => {
         if (p[0] === currPlayerId) {
@@ -172,6 +196,58 @@ function MultiplayerGamePage() {
   }
 
   useEffect(() => {
+
+    setRoomId(roomLoc);
+
+    if (playerName === undefined || roomLoc === "") {
+      navigate("/");
+    }
+
+    if (channel === null) {
+
+      let ch;
+
+      if (socket === null) {
+        const ss = new Socket(process.env.REACT_APP_WS_URL, {
+          params: { playerId: localStorage.getItem("playerId") },
+        });
+        ss.connect();
+        console.log(ss)
+        setSocket(ss);
+        ch = ss.channel("room:" + roomLoc, {
+          playerName: (playerName),
+        });
+      } else {
+        ch = socket.channel("room:" + roomLoc, {
+          playerName: (playerName),
+        });
+      }
+
+      ch
+        .join()
+        .receive("ok", (res) => {
+          console.log("joined successfully");
+          setChannel(channel);
+          setPlayers(res.players.map(p => [p.playerId, res.players.filter(r => r.playerId === p.playerId)[0].playerName, p.row]))
+          setGameStart(res.room.started)
+          setRound(res.room.round)
+          setRoundEnd(res.room.round !== 0 && (!res.room.started))
+          setGameEnd(false)
+          setFinalScores(res.players.map(p => [p.playerId, res.players.filter(r => r.playerId === p.playerId)[0].playerName, p.score]))
+          setTimerTime(res.endTime);
+          restart(new Date(res.endTime));
+        })
+        .receive("error", ({ reason }) => {
+          console.log("error");
+          reason === "invalid room id"
+            ? setMessage("Your room code is cap")
+            : setMessage(reason)
+          return;
+        });
+      return () => {
+        ch.leave();
+      };
+    }
 
     const ch = channel;
     
@@ -239,7 +315,7 @@ function MultiplayerGamePage() {
           gameStart ? (
             <div className="w-screen flex-none">
               <MultiplayerBar minutes={minutes} seconds={seconds} />
-              <Wordle colorFunction={colorFunction} message={multiBarMessage} />
+              <Wordle colorFunction={colorFunction} message={message} />
             </div>
           ) : (
               <div className="flex flex-col items-center mt-5 gap-4">

@@ -15,6 +15,7 @@ export function MultiplayerProvider({children}) {
     const [roundEnd, setRoundEnd] = useState(false);
     const [gameEnd, setGameEnd] = useState(false);
     const [finalScores, setFinalScores] = useState([]);
+    const [timerTime, setTimerTime] = useState();
 
 
     const value = {
@@ -41,7 +42,9 @@ export function MultiplayerProvider({children}) {
         gameEnd,
         setGameEnd,
         finalScores,
-        setFinalScores
+        setFinalScores,
+        timerTime,
+        setTimerTime
     };
 
     return (

@@ -10,7 +10,7 @@ function ReadyButton(props) {
   const [clicked, setClicked] = useState(false);
 
   if (props.allReady) {
-    return <h3 className="text-tpurple text-xl md:text-2xl">Game starts in:</h3>;
+    return <h3 className="text-tpurple text-xl md:text-2xl">Game starting now...</h3>;
   }
   if (props.isReady) {
     return <h3 className="text-tpurple text-xl md:text-2xl">Waiting for other players...</h3>;

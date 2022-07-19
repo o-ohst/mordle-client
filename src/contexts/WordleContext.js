@@ -11,7 +11,8 @@ export function WordleProvider({children}) {
     const [usedLetters, setUsedLetters] = useState({});
     const [message, setMessage] = useState("");
     const [receivedColors, setReceivedColors] = useState("");
-
+    const [guessEnabled, setGuessEnabled] = useState(true);
+    
     const value = {
         guesses,
         setGuesses,
@@ -28,7 +29,9 @@ export function WordleProvider({children}) {
         message,
         setMessage,
         receivedColors,
-        setReceivedColors
+        setReceivedColors,
+        guessEnabled,
+        setGuessEnabled
     };
 
     return (

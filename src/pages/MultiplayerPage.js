@@ -20,6 +20,12 @@ function MultiplayerPage() {
     socket,
     setSocket,
     setRoomId,
+    setGameStart,
+    setRound,
+    setRoundEnd,
+    setGameEnd,
+    setFinalScores,
+    setTimerTime,
   } = useContext(MultiplayerContext);
   const [roomCreated, setRoomCreated] = useState(false);
   const [roomJoined, setRoomJoined] = useState(false);
@@ -48,8 +54,14 @@ function MultiplayerPage() {
     console.log("useEffect, []");
     resetAll();
     if (playerId === "" || playerId === undefined) {
-      axios.get(process.env.REACT_APP_API_URL + "/register").then((res) => {
+      console.log(localStorage.getItem("playerId"));
+      if (localStorage.getItem("playerId") !== null) {
+        setPlayerId(localStorage.getItem("playerId"));
+        connectToSocket(localStorage.getItem("playerId"));
+      }
+      axios.get(process.env.REACT_APP_API_URL + "/register", { withCredentials: true }).then((res) => {
         setPlayerId(res.data.playerId);
+        localStorage.setItem("playerId", res.data.playerId);
       });
     }
   }, []);
@@ -57,15 +69,19 @@ function MultiplayerPage() {
   useEffect(() => {
     //connect to socket after setting playerId
     if (playerId === "" || playerId === undefined) return;
-    if (!(socket === null || socket === undefined)) return;
+    if (!(socket === null || socket === undefined)) return; //if no socket connection, then connect
     console.log("useEffect, playerId");
+    connectToSocket(playerId)
+  }, [playerId]);
+
+  function connectToSocket(pid) {
     const ss = new Socket(process.env.REACT_APP_WS_URL, {
-      params: { playerId: playerId },
+      params: { playerId: pid },
     });
     ss.connect();
+    console.log(ss)
     setSocket(ss);
-    console.log(ss);
-  }, [playerId]);
+  }
 
   function handleNameChange(event) {
     setPlayerName(event.target.value);
@@ -85,6 +101,7 @@ function MultiplayerPage() {
     axios //http
       .get(process.env.REACT_APP_API_URL + "/create-room", {
         params: { playerId: playerId },
+        withCredentials: true
       })
       .then((res) => {
         console.log(res.data);
@@ -128,10 +145,17 @@ function MultiplayerPage() {
 
     channel
       .join()
-      .receive("ok", () => {
+      .receive("ok", (res) => {   
         console.log("joined successfully");
         setChannel(channel);
         setRoomJoined(true);
+        setPlayers(res.players.map(p => [p.playerId, res.room.players.filter(r => r.playerId === p.playerId)[0].playerName, p.row]))
+        setGameStart(res.room.started)
+        setRound(res.room.round)
+        setRoundEnd(res.room.round !== 0 && (!res.room.started))
+        setGameEnd(false)
+        setFinalScores(res.players.map(p => [p.playerId, res.room.players.filter(r => r.playerId === p.playerId)[0].playerName, p.score]))
+        setTimerTime(res.endTime);
       })
       .receive("error", ({ reason }) => {
         console.log("error");

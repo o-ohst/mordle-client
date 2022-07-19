@@ -144,7 +144,7 @@ function Wordle(props) {
       <Grid currentGuess={currentGuess} guesses={guesses} row={row} />
       <Keyboard
         usedLetters={usedLetters}
-        message={props.message !== null ? props.message : message}
+        message={message}
         handleKeyUp={handleKeyUp}
       />
     </div>
