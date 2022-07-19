@@ -315,7 +315,7 @@ function MultiplayerGamePage() {
           gameStart ? (
             <div className="w-screen flex-none">
               <MultiplayerBar minutes={minutes} seconds={seconds} />
-              <Wordle colorFunction={colorFunction} message={message} />
+              <Wordle colorFunction={colorFunction}/>
             </div>
           ) : (
               <div className="flex flex-col items-center mt-5 gap-4">

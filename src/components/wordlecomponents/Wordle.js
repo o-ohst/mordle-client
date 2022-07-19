@@ -18,9 +18,10 @@ function Wordle(props) {
     usedLetters,
     setUsedLetters,
     receivedColors,
-    setReceivedColors
+    setReceivedColors,
+    message,
+    setMessage
   } = useContext(WordleContext);
-  const [message, setMessage] = useState("");
   const allowed_words = require("../data/allowed_words.json").allowed_words;
 
   function addGuess(formattedGuess) {
